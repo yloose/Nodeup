@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>nodeup-native</artifactId>
+	<packaging>so</packaging>
+
+	<properties>
+		<java.version>11</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<native.source.filename>de_yloose_nodeup_backend_NetworkService.c</native.source.filename>
+	</properties>
+
+	<parent>
+		<groupId>de.yloose.nodeup</groupId>
+		<artifactId>nodeup</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<profiles>
+		<profile>
+			<id>fakeNetwork</id>
+			<properties>
+				<native.source.filename>de_yloose_nodeup_backend_FakeNetworkService.c</native.source.filename>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<version>1.0-alpha-8</version>
+				<extensions>true</extensions>
+				<configuration>
+					<sources>
+						<source>
+							<directory>${basedir}/include</directory>
+						</source>
+						<source>
+							<directory>${basedir}/src</directory>
+							<fileNames>
+								<fileName>${native.source.filename}</fileName>
+							</fileNames>
+						</source>
+					</sources>
+					<compilerStartOptions>
+						<compilerStartOption>-I ${JAVA_HOME}/include/</compilerStartOption>
+						<compilerStartOption>-I ${JAVA_HOME}/include/linux/</compilerStartOption>
+					</compilerStartOptions>
+					<compilerEndOptions>
+						<compilerEndOption>-fPIC</compilerEndOption>
+					</compilerEndOptions>
+					<linkerStartOptions>
+						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
+						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
+						<linkerStartOption>-I ${JAVA_HOME}/lib/</linkerStartOption>
+					</linkerStartOptions>
+					<linkerEndOptions>
+						<linkerEndOption>-shared</linkerEndOption>
+						<linkerEndOption>-fPIC</linkerEndOption>
+						<linkerEndOption>-lpcap</linkerEndOption>
+					</linkerEndOptions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
