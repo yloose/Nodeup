@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.controller;
+package de.yloose.nodeup.controller;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.yloose.nodeup.backend.models.DatasinkEntity;
-import de.yloose.nodeup.backend.repository.DatasinkRepository;
+import de.yloose.nodeup.models.DatasinkEntity;
+import de.yloose.nodeup.repository.DatasinkRepository;
 
 @RestController
 @RequestMapping("/api/datasinks")

@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.controller;
+package de.yloose.nodeup.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.yloose.nodeup.backend.models.NodeEntity;
-import de.yloose.nodeup.backend.repository.NodeRepository;
-import de.yloose.nodeup.backend.service.NodeService;
+import de.yloose.nodeup.models.NodeEntity;
+import de.yloose.nodeup.repository.NodeRepository;
+import de.yloose.nodeup.service.NodeService;
 
 @RestController
 @RequestMapping("/api/nodes")

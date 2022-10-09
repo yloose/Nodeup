@@ -1,4 +1,4 @@
-#include "../include/de_yloose_nodeup_backend_NetworkService.h"
+#include "../include/de_yloose_nodeup_networking_NetworkService.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,7 +56,7 @@ typedef struct {
 const char *socket_path = "/tmp/nodeup.socket";
 int sfd;
 
-JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_backend_NetworkService_initNetworkInterface(
+JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_networking_NetworkService_initNetworkInterface(
 		JNIEnv *env, jobject thisObject, jstring device) {
 
 	struct sockaddr_un addr;
@@ -183,7 +183,7 @@ void send_packets_to_server(JNIEnv *env, jobject thisObject, int cnt) {
 	(*env)->ReleaseByteArrayElements(env, ret_packet, temp, 0);
 
 	jclass networkHandler = (*env)->FindClass(env,
-			"de/yloose/nodeup/backend/NetworkService");
+			"de/yloose/nodeup/networking/NetworkService");
 	jmethodID packet_callback = (*env)->GetMethodID(env, networkHandler,
 			"nativeRecvPacketCallback", "([B)V");
 
@@ -200,7 +200,7 @@ int digits_only(const char *s) {
 	return 1;
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_startListeningLoop(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startListeningLoop(
 		JNIEnv *env, jobject thisObject, jlong dev) {
 	ssize_t numRead;
 
@@ -236,7 +236,7 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_startListeni
 	}
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_sendPacket(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_sendPacket(
 		JNIEnv *env, jobject thisObject, jlong dev, jbyteArray packetArray,
 		jint length) {
 	return 0;

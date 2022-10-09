@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.models;
+package de.yloose.nodeup.models;
 
 import java.util.Map;
 import java.util.UUID;

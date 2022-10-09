@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.service;
+package de.yloose.nodeup.service;
 
 import java.util.Optional;
 
@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.yloose.nodeup.backend.models.NodeEntity;
-import de.yloose.nodeup.backend.repository.NodeRepository;
+import de.yloose.nodeup.models.NodeEntity;
+import de.yloose.nodeup.repository.NodeRepository;
 
 @Service
 public class NodeService {

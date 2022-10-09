@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend;
+package de.yloose.nodeup.networking.packet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

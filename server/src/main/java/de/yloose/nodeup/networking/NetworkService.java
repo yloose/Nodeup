@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend;
+package de.yloose.nodeup.networking;
 
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.Executors;
@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.yloose.nodeup.networking.packet.Frame;
 
 public class NetworkService<T> extends SubmissionPublisher<T> {
 	

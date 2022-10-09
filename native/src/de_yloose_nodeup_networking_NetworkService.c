@@ -1,4 +1,4 @@
-#include "../include/de_yloose_nodeup_backend_NetworkService.h"
+#include "../include/de_yloose_nodeup_networking_NetworkService.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@ typedef struct {
 } packet_handler_args_t;
 
 
-JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_backend_NetworkService_initNetworkInterface(
+JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_networking_NetworkService_initNetworkInterface(
 		JNIEnv *env, jobject thisObject, jstring device) {
 
 	const char *dev = (*env)->GetStringUTFChars(env, device, NULL) ;
@@ -56,7 +56,7 @@ void packet_handler(u_char *args, const struct pcap_pkthdr *header,
 			0);
 
 	jclass networkHandler = (*(jni_env->env))->FindClass(jni_env->env,
-			"de/yloose/nodeup/backend/NetworkService");
+			"de/yloose/nodeup/networking/NetworkService");
 	jmethodID packet_callback = (*(jni_env->env))->GetMethodID(jni_env->env,
 			networkHandler, "nativeRecvPacketCallback", "([B)V");
 
@@ -65,7 +65,7 @@ void packet_handler(u_char *args, const struct pcap_pkthdr *header,
 
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_startListeningLoop(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startListeningLoop(
 		JNIEnv *env, jobject thisObject, jlong dev) {
 
 	pcap_t *device_handle = (pcap_t *) dev;
@@ -75,7 +75,7 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_startListeni
 	return 1;
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_backend_NetworkService_sendPacket(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_sendPacket(
 		JNIEnv *env, jobject thisObject, jlong dev, jbyteArray packetArray, jint length) {
 
 	pcap_t *device_handle = (pcap_t *) dev;

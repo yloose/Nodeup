@@ -6,8 +6,8 @@ import java.util.UUID;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
-import de.yloose.nodeup.backend.models.NodeDatasinkConfigLinker;
-import de.yloose.nodeup.backend.models.NodeEntity;
+import de.yloose.nodeup.models.NodeDatasinkConfigLinker;
+import de.yloose.nodeup.models.NodeEntity;
 
 public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoints> {
 

@@ -2,7 +2,7 @@ package de.yloose.nodeup.datasinks;
 
 import java.util.List;
 
-import de.yloose.nodeup.backend.models.NodeEntity;
+import de.yloose.nodeup.models.NodeEntity;
 
 public class WeatherDatapoints {
 

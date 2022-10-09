@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.models;
+package de.yloose.nodeup.models;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import de.yloose.nodeup.backend.Weatherdata.WeatherDatapointDto;
+import de.yloose.nodeup.networking.Weatherdata.WeatherDatapointDto;
 
 @Entity
 @Table(name = "WEATHERDATA", indexes = @Index(name = "idx_node_counter", columnList = "node_id, counter", unique = true))

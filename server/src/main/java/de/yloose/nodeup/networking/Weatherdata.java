@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend;
+package de.yloose.nodeup.networking;
 
 import java.util.ArrayList;
 import java.util.Arrays;

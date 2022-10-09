@@ -1,11 +1,11 @@
-package de.yloose.nodeup.backend.controller;
+package de.yloose.nodeup.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.yloose.nodeup.backend.service.SettingsService;
+import de.yloose.nodeup.service.SettingsService;
 
 @RestController
 @RequestMapping("/api/settings")

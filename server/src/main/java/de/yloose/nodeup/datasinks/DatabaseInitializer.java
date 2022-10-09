@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import de.yloose.nodeup.backend.models.DatasinkEntity;
-import de.yloose.nodeup.backend.repository.DatasinkRepository;
+import de.yloose.nodeup.models.DatasinkEntity;
+import de.yloose.nodeup.repository.DatasinkRepository;
 
 @Component
 public class DatabaseInitializer {

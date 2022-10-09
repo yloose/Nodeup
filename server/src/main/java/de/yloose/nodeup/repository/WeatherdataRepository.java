@@ -1,4 +1,4 @@
-package de.yloose.nodeup.backend.repository;
+package de.yloose.nodeup.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import de.yloose.nodeup.backend.models.NodeEntity;
-import de.yloose.nodeup.backend.models.WeatherDatapoint;
+import de.yloose.nodeup.models.NodeEntity;
+import de.yloose.nodeup.models.WeatherDatapoint;
 
 public interface WeatherdataRepository extends JpaRepository<WeatherDatapoint, UUID> {
 	
