@@ -37,5 +37,5 @@ jobs:
         run: sudo apt-get install -y libpcap-dev
       
       - name: Build with maven
-        run: mvn --batch-mode --update-snapshots package
+        run: mvn --batch-mode --update-snapshots package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
         
