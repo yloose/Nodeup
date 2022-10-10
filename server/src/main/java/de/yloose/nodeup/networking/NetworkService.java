@@ -40,9 +40,8 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 		}
 	}
 	
-	// TODO: Return success or not and check if network interface has been initialized
-	public void start() {
-		startListeningLoop(deviceHandle);
+	public int start() {
+		return startListeningLoop(deviceHandle);
 	}
 	
 	public void nativeRecvPacketCallback(byte[] packet) {
