@@ -38,7 +38,7 @@ public class PacketAnswerBuilder {
 		buffer.putShort((short) (nodeConfig.getSendDataDeltas().getPressure() * 100));
 		buffer.put((byte) (nodeConfig.getSendDataDeltas().getVoltage() * 100));
 		buffer.put((byte) (nodeConfig.getSwCutoffVoltage() * 100));
-		// Set crc filed to 0 to calculate the checksum and replace it
+		// Set crc field to 0 to calculate the checksum and replace it
 		buffer.putShort((short) 0);
 		byte[] crcData = buffer.array();
 		buffer.position(buffer.position() - 2);
