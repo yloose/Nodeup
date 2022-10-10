@@ -7,7 +7,7 @@
 
 	<profiles>
 		<profile>
-			<id>generateUpdateConfigXML</id>
+			<id>updateConfigBuilder</id>
 			<modules>
 				<module>native</module>
 				<module>server</module>
