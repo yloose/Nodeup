@@ -166,6 +166,9 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startList
 		JNIEnv *env, jobject thisObject, jlong dev) {
 
 	pcap_t *device_handle = (pcap_t*) dev;
+	if (dev == NULL)
+		return -1;
+
 	packet_handler_args_t packet_handler_args = { env, thisObject };
 	pcap_loop(device_handle, 0, packet_handler, (char*) &packet_handler_args);
 
@@ -188,16 +191,15 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_sendPacke
 	}
 
 	if (device_handle == NULL) {
-		// TODO: Handle error
-		printf("NIC not intialized.\n");
+		return -1
 	}
 
 	int send_bytes = pcap_inject(device_handle, (const void*) packet, length);
 	// printf("Length of packet: %d Send bytes : %d\n", length, send_bytes);
 	if (send_bytes != length) {
-		// TODO: Handle error
 		printf("Failed to send data. Send bytes: %d - %s\n", send_bytes,
 				pcap_geterr(device_handle));
+		return -2;
 	}
 
 	fflush(stdout);
