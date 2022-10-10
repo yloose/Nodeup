@@ -1,8 +1,10 @@
 name: Build
-run-name: Build triggered by @${{ github.actor }}
+run-name: Build and test
 
 on:
-  workflow_dispatch
+  push:
+    branches:
+      - main
   
  
 jobs: 

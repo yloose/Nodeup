@@ -1,4 +1,5 @@
 name: Release new version
+run-name: New version release triggered by @${{ github.actor }}
 
 
 on:
