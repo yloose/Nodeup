@@ -77,6 +77,8 @@ public class MqttSink extends WeatherdataSink {
 		        msg.setRetained(false);
 		        mqttClient.publish(config.get("topic").toString().replace("%node%", datapoints.getNode().getDisplayName()), msg);
 			}
+			
+			mqttClient.close();
 		} catch (MqttException e) {
 			// TODO Auto-generated catch block
 		} catch (JsonProcessingException e) {
