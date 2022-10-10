@@ -1,8 +1,6 @@
 package de.yloose.nodeup.service;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +16,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.yloose.nodeup.datasinks.WeatherDatapoints;
@@ -30,11 +29,10 @@ import de.yloose.nodeup.networking.Weatherdata;
 import de.yloose.nodeup.networking.Weatherdata.WeatherDatapointDto;
 import de.yloose.nodeup.networking.packet.ESPNowFrame;
 import de.yloose.nodeup.networking.packet.Frame;
-import de.yloose.nodeup.networking.packet.ManagementFrame;
 import de.yloose.nodeup.networking.packet.PacketAnswerBuilder;
-import de.yloose.nodeup.networking.packet.RadiotapHeader;
 import de.yloose.nodeup.repository.NodeRepository;
 import de.yloose.nodeup.repository.WeatherdataRepository;
+import de.yloose.nodeup.util.Conversion;
 
 @Service
 public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherdata>> {
@@ -47,20 +45,15 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 
 	@Autowired
 	private WeatherDatapointsPublisher weatherDatapointPublisher;
+	
+	@Value("${networkInterface.name:wlan1}")
+	private String networkInterface;
 
 	private NetworkService<ReceivedData<Weatherdata>> networkService;
 
 	Flow.Subscription subscription = null;
 
 	private static Logger LOG = LoggerFactory.getLogger(WeatherdataService.class);
-
-	private byte[] macStringToByteArray(String mac) {
-		ByteBuffer buffer = ByteBuffer.allocate(6);
-		for (String macPart : mac.split(":")) {
-			buffer.put((byte) Integer.parseInt(macPart, 16));
-		}
-		return buffer.array();
-	}
 
 	private void handleWeatherdata(ReceivedData<Weatherdata> recvData) {
 		LOG.info("Received data mac {}", recvData.getMac());
@@ -76,28 +69,11 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 
 		node = nodeRepository.save(node);
 
-		// Build answer packet
-		RadiotapHeader radioTapHeader = RadiotapHeader.createRadiotapHeader();
-		ManagementFrame managementFrame = new ManagementFrame(13, macStringToByteArray(node.getMac()),
-				new byte[] { (byte) 0xce, 0x50, (byte) 0xe3, 0x26, 0x0b, (byte) 0xf7 });
-		managementFrame.setActionFrame(ESPNowFrame.createESPNowFrame(PacketAnswerBuilder.build(node.getConfig())));
-		managementFrame.calculateFcs();
-
-		byte[] radiotapHeaderBytes = radioTapHeader.toByteArray();
-		byte[] managementFrameBytes = managementFrame.toByteArray();
-		byte[] packet = Arrays.copyOf(radiotapHeaderBytes, radiotapHeaderBytes.length + managementFrameBytes.length);
-		System.arraycopy(managementFrameBytes, 0, packet, radiotapHeaderBytes.length, managementFrameBytes.length);
-
-// 		for (byte b : packet) {
-//		    System.out.print(Integer.toBinaryString(b & 255 | 256).substring(1) + " ");
-//		}
-//		System.out.println(" ");
-
 		// Send answer to node
-		networkService.sendPacket(packet);
-
+		networkService.sendPacket(PacketAnswerBuilder.build(node));
+		
+		// Update datapoints in db and create datapoints ready to send to datasinks
 		List<WeatherDatapoint> datapointsInDB = this.weatherdataRepository.findAllByNodeOrderByTimestampDesc(node);
-		// long nextIndex = datapointsInDB.
 		long nextIndex = this.weatherdataRepository.findFirstByNodeOrderByTimestampDesc(node)
 				.map(wdp -> (wdp.getCounter() + 1) % 10).orElse(Long.valueOf(0));
 
@@ -140,16 +116,10 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 		ReceivedData<Weatherdata> receivedData = new ReceivedData<Weatherdata>();
 
 		ESPNowFrame espNowFrame = (ESPNowFrame) frame.getManagementFrame().getActionFrame();
-		Weatherdata weatherdata = new Weatherdata(espNowFrame.getVariable_data());
-
-		byte[] sa = frame.getManagementFrame().getSA();
-		String[] convAddrParts = new String[sa.length];
-		for (int i = 0; i < sa.length; i++) {
-			convAddrParts[i] = String.format("%02X", sa[i]);
-		}
+		Weatherdata weatherdata = new Weatherdata(espNowFrame.getVariable_data());		
 
 		receivedData.setData(weatherdata);
-		receivedData.setMac(String.join(":", convAddrParts));
+		receivedData.setMac(Conversion.macBytesToString(frame.getManagementFrame().getSA()));
 
 		return receivedData;
 	}
@@ -161,11 +131,12 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 		this.networkService.setParseDataFunction(frame -> parseFrame(frame));
 		ExecutorService execService = Executors.newSingleThreadExecutor();
 
-		this.networkService.init();
-
-		execService.submit(() -> this.networkService.start());
-
-		this.networkService.subscribe(this);
+		if (!this.networkService.init(networkInterface)) {
+			LOG.warn("Failed to initialize network service. Procceding without capturing of data");
+		} else {
+			execService.submit(() -> this.networkService.start());
+			this.networkService.subscribe(this);
+		}
 	}
 
 	@Override

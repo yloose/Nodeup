@@ -2,12 +2,31 @@ package de.yloose.nodeup.networking.packet;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
+import de.yloose.nodeup.models.NodeEntity;
 import de.yloose.nodeup.models.NodeEntity.NodeConfig;
+import de.yloose.nodeup.util.CRC16CCIT;
+import de.yloose.nodeup.util.Conversion;
 
 public class PacketAnswerBuilder {
+	
+	public static byte[] build(NodeEntity node) {
+		RadiotapHeader radioTapHeader = RadiotapHeader.createRadiotapHeader();
+		ManagementFrame managementFrame = new ManagementFrame(13, Conversion.macStringToBytes(node.getMac()),
+				new byte[] { (byte) 0xce, 0x50, (byte) 0xe3, 0x26, 0x0b, (byte) 0xf7 });
+		managementFrame.setActionFrame(ESPNowFrame.createESPNowFrame(PacketAnswerBuilder.buildESPNowData(node.getConfig())));
+		managementFrame.calculateFcs();
 
-	public static byte[] build(NodeConfig nodeConfig) {
+		byte[] radiotapHeaderBytes = radioTapHeader.toByteArray();
+		byte[] managementFrameBytes = managementFrame.toByteArray();
+		byte[] packet = Arrays.copyOf(radiotapHeaderBytes, radiotapHeaderBytes.length + managementFrameBytes.length);
+		System.arraycopy(managementFrameBytes, 0, packet, radiotapHeaderBytes.length, managementFrameBytes.length);
+		
+		return packet;
+	}
+
+	public static byte[] buildESPNowData(NodeConfig nodeConfig) {
 		ByteBuffer buffer = ByteBuffer.allocate(18).order(ByteOrder.LITTLE_ENDIAN);
 		
 		buffer.putInt(nodeConfig.getSendDataInterval());
@@ -19,73 +38,12 @@ public class PacketAnswerBuilder {
 		buffer.putShort((short) (nodeConfig.getSendDataDeltas().getPressure() * 100));
 		buffer.put((byte) (nodeConfig.getSendDataDeltas().getVoltage() * 100));
 		buffer.put((byte) (nodeConfig.getSwCutoffVoltage() * 100));
-		// TODO: Add real crc16-ccit
+		// Set crc filed to 0 to calculate the checksum and replace it
 		buffer.putShort((short) 0);
+		byte[] crcData = buffer.array();
+		buffer.position(buffer.position() - 2);
+		buffer.putShort(CRC16CCIT.calculate(crcData));
 		
 		return buffer.array();
-		
-//		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//		try {
-//			stream.write(convertSendDataInterval(nodeConfig.getSendDataInterval()));
-//			stream.write(convertMeasureInterval(nodeConfig.getMeasureInterval()));
-//			stream.write(convertESPOperatingMode(nodeConfig.getEspOperatingMode()));
-//			stream.write(convertUseULP(nodeConfig.isUseULP()));
-//			// Send data deltas START
-//			stream.write(convertSendDataDeltaTemperature(nodeConfig.getSendDataDeltas().getTemperature()));
-//			stream.write(convertSendDataDeltaHumidity(nodeConfig.getSendDataDeltas().getHumidity()));
-//			stream.write(convertSendDataDeltaPressure(nodeConfig.getSendDataDeltas().getPressure()));
-//			stream.write(convertSendDataDeltaVoltage(nodeConfig.getSendDataDeltas().getVoltage()));
-//			// Send data deltas END
-//			stream.write(convertSwCutoffVoltage(nodeConfig.getSwCutoffVoltage()));
-//			// TODO: Add real crc16-ccit
-//			stream.write(new byte[] {0, 0});
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		return stream.toByteArray();
 	}
-
-//	private static byte[] intToByteArray(int number, int length) {
-//		return ByteBuffer.allocate(length).putInt(number).array();
-//	}
-//
-//	// Converting methods
-//
-//	private static byte[] convertSendDataInterval(int sendDataInterval) {
-//		return intToByteArray(sendDataInterval, 4);
-//	}
-//
-//	private static byte[] convertMeasureInterval(int measureInterval) {
-//		return intToByteArray(measureInterval, 2);
-//	}
-//	
-//	private static byte convertESPOperatingMode(ESPOperatingMode espOperatingMode) {
-//		return (byte) espOperatingMode.getValue();
-//	}
-//
-//	private static byte convertUseULP(boolean useULP) {
-//		return (byte) (useULP ? 1 : 0);
-//	}
-//	
-//	private static byte[] convertSendDataDeltaTemperature(double temperature) {
-//		return intToByteArray((int) (temperature * 100), 2);
-//	}
-//
-//	private static byte[] convertSendDataDeltaHumidity(double humidity) {
-//		return intToByteArray((int) (humidity * 100), 2);
-//	}
-//
-//	private static byte[] convertSendDataDeltaPressure(double pressure) {
-//		return intToByteArray((int) (pressure * 100), 2);
-//	}
-//
-//	private static byte convertSendDataDeltaVoltage(double voltage) {
-//		return (byte) (voltage * 100);
-//	}
-//
-//	private static byte convertSwCutoffVoltage(double voltage) {
-//		return (byte) (voltage * 100);
-//	}
 }

@@ -3,7 +3,6 @@ package de.yloose.nodeup.models;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;

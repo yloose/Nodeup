@@ -25,13 +25,18 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 		super(Executors.newFixedThreadPool(10), 5);
 	}
 	
-	// TODO: Return something, e.g. success or not
-	public void init() {
-		long ret = initNetworkInterface("wlan1");
+	public boolean init(String interfaceName) {
+		long ret = initNetworkInterface(interfaceName);
 		if (ret == -1) {
+			LOG.error("Failed to intialize network interface.");
+			return false;
+		}
+		else if (ret == -2) {
 			LOG.error("Failed to open network interface.");
+			return false;
 		} else {
 			deviceHandle = ret;
+			return true;
 		}
 	}
 	
