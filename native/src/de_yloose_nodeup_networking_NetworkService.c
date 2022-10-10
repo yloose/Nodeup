@@ -190,9 +190,8 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_sendPacke
 		(*env)->ReleaseByteArrayElements(env, packetArray, temp, JNI_ABORT);
 	}
 
-	if (device_handle == NULL) {
-		return -1
-	}
+	if (device_handle == NULL)
+		return -1;
 
 	int send_bytes = pcap_inject(device_handle, (const void*) packet, length);
 	// printf("Length of packet: %d Send bytes : %d\n", length, send_bytes);
