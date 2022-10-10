@@ -12,7 +12,7 @@
 				<module>native</module>
 				<module>server</module>
 				<module>bootstrap</module>
-				<module>updatecConfigbBuilder</module>
+				<module>updatecConfigBuilder</module>
 			</modules>
 		</profile>
 		<profile>
