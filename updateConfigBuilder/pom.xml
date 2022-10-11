@@ -25,7 +25,6 @@
 		</dependency>
 	</dependencies>
 
-
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<!-- Include update4j dependency for execution -->
