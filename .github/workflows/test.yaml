@@ -27,8 +27,8 @@ jobs:
       
       - name: Build with maven
         run: mvn --batch-mode --update-snapshots package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-        
-      - name: Updatedb
-        run: sudo updatedb
-      - name: Find files
-        run: locate update4j
+
+      - name: Find update4j
+        run: find / -iname "*update4j*"
+      - name: Find jars
+        run: find / -iname "*.jar"
