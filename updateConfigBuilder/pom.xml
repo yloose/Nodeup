@@ -3,7 +3,6 @@
 	<artifactId>update-config-builder</artifactId>
 	<packaging>jar</packaging>
 
-
 	<parent>
 		<groupId>de.yloose.nodeup</groupId>
 		<artifactId>nodeup</artifactId>
@@ -29,6 +28,7 @@
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
+		<!-- Include update4j dependency for execution -->
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
