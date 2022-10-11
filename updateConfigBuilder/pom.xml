@@ -3,6 +3,7 @@
 	<artifactId>update-config-builder</artifactId>
 	<packaging>jar</packaging>
 
+
 	<parent>
 		<groupId>de.yloose.nodeup</groupId>
 		<artifactId>nodeup</artifactId>
