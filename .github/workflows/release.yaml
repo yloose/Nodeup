@@ -32,7 +32,7 @@ jobs:
          run: mvn --batch-mode --update-snapshots -P updateConfigBuilder package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
        - name: Generate update config.xml
-         run: java -jar ./updateConfigBuilder/target/update-config-builder.jar
+         run: java -jar ./updateConfigBuilder/target/update-config-builder-jar-with-dependencies.jar
          
        - name: Release new version
          uses: "marvinpinto/action-automatic-releases@latest"

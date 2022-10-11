@@ -15,10 +15,7 @@ public class UpdateConfigBuilder {
 	private static final Logger LOG = Logger.getLogger(UpdateConfigBuilder.class.getName());
 
 	public static void main(String[] args) {
-		
-		String projectRoot = System.getProperty("user.dir");
-		String configLoc = projectRoot + "/target";
-		
+
 		Properties props = new Properties();
 		try {
 			props.load(UpdateConfigBuilder.class.getResourceAsStream("/application.properties"));
@@ -27,6 +24,7 @@ public class UpdateConfigBuilder {
 			return;
 		}
 		String nodeupJar = props.getProperty("nodeup-server.file.path");
+		String configxml = props.getProperty("configxml.file.path");
 
 		Configuration config = Configuration.builder()
 				.baseUri("http://docs.update4j.org/demo/business")
@@ -36,7 +34,7 @@ public class UpdateConfigBuilder {
 				.file(FileMetadata.readFrom(nodeupJar).path("Nodeup.jar").uri("/nodeup.jar").classpath())
 				.build();
 
-		try (Writer out = Files.newBufferedWriter(Paths.get(configLoc + "/config.xml"))) {
+		try (Writer out = Files.newBufferedWriter(Paths.get(configxml))) {
 			config.write(out);
 		} catch (Exception e) {
 			LOG.info("Failed to write out config.txt");
