@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>de.yloose.nodeup</groupId>
 		<artifactId>nodeup</artifactId>
-		<version>0.0.2</version>
+		<version>0.0.3</version>
 	</parent>
 
 	<profiles>
