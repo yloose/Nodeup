@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>de.yloose.nodeup</groupId>
 		<artifactId>nodeup</artifactId>
-		<version>0.0.1</version>
+		<version>0.0.2</version>
 	</parent>
 
 	<dependencyManagement>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>de.yloose.nodeup</groupId>
 			<artifactId>nodeup-native</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2</version>
 			<scope>provided</scope>
 			<type>so</type>
 		</dependency>
