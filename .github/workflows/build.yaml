@@ -17,7 +17,7 @@ jobs:
       
       - name: Bump version
         id: bump
-        uses: yloose/maven-version-bump-action@11815ad7ba2fd9a532dd8749b97817e2a289bd2b
+        uses: yloose/maven-version-bump-action@dea50fa224fd7066ef1c2e3e3a1243473543d6e8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       
