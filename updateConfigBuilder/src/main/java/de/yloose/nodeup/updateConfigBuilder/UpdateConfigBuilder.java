@@ -27,7 +27,7 @@ public class UpdateConfigBuilder {
 		String configxml = props.getProperty("configxml.file.path");
 
 		Configuration config = Configuration.builder()
-				.baseUri("http://docs.update4j.org/demo/business")
+				.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
 				.basePath("${user.dir}/${app.name}-update")
 				.property("app.name", "Nodeup")
 				.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher")

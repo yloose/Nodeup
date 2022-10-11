@@ -13,7 +13,7 @@ import org.update4j.UpdateOptions.ArchiveUpdateOptions;
 
 public class Bootstrap {
 	
-	public static final String CONFIG_URL = "http://localhost:8000/config.xml";
+	public static final String CONFIG_URL = "https://github.com/yloose/Nodeup/releases/download/latest/config.xml";
 
 	public static void main(String[] args) {
 		while (true) {
