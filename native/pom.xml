@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>nodeup-native</artifactId>
-	<packaging>so</packaging>
+	<packaging>nar</packaging>
 
 	<properties>
 		<java.version>11</java.version>
@@ -31,39 +31,36 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>native-maven-plugin</artifactId>
-				<version>1.0-alpha-8</version>
+				<groupId>com.github.maven-nar</groupId>
+				<artifactId>nar-maven-plugin</artifactId>
+				<version>3.5.1</version>
 				<extensions>true</extensions>
 				<configuration>
 					<sources>
-						<source>
-							<directory>${basedir}/include</directory>
-						</source>
-						<source>
-							<directory>${basedir}/src</directory>
-							<fileNames>
-								<fileName>${native.source.filename}</fileName>
-							</fileNames>
-						</source>
+						<source>${basedir}/src/${native.source.filename}</source>
 					</sources>
-					<compilerStartOptions>
-						<compilerStartOption>-I ${JAVA_HOME}/include/</compilerStartOption>
-						<compilerStartOption>-I ${JAVA_HOME}/include/linux/</compilerStartOption>
-					</compilerStartOptions>
-					<compilerEndOptions>
-						<compilerEndOption>-fPIC</compilerEndOption>
-					</compilerEndOptions>
-					<linkerStartOptions>
-						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
-						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
-						<linkerStartOption>-I ${JAVA_HOME}/lib/</linkerStartOption>
-					</linkerStartOptions>
-					<linkerEndOptions>
-						<linkerEndOption>-shared</linkerEndOption>
-						<linkerEndOption>-fPIC</linkerEndOption>
-						<linkerEndOption>-lpcap</linkerEndOption>
-					</linkerEndOptions>
+					<c>
+						<name>gcc</name>
+						<includes>
+							<include>${basedir}/include/de_yloose_nodeup_networking_NetworkService.h</include>
+						</includes>
+						<options>
+							<option>-I ${JAVA_HOME}/include/</option>
+							<option>-I ${JAVA_HOME}/include/linux/</option>
+							<option>-fPIC</option>
+						</options>
+					</c>
+					<linker>
+						<name>gcc</name>
+						<options>
+							<option>-shared</option>
+							<option>-fPIC</option>
+							<option>-lpcap</option>
+							<option>-I ${JAVA_HOME}/include/</option>
+							<option>-I ${JAVA_HOME}/include/linux/</option>
+							<option>-I ${JAVA_HOME}/lib/</option>
+						</options>
+					</linker>
 				</configuration>
 			</plugin>
 		</plugins>
