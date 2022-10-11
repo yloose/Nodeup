@@ -17,7 +17,7 @@ jobs:
       
       - name: Bump version
         id: bump
-        uses: yloose/maven-version-bump-action@v3
+        uses: yloose/maven-version-bump-action@sha
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       
