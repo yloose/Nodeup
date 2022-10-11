@@ -109,7 +109,6 @@
 								<artifactItem>
 									<groupId>de.yloose.nodeup</groupId>
 									<artifactId>nodeup-native</artifactId>
-									<version>0.0.1</version>
 									<type>so</type>
 									<destFileName>libNodeup.so</destFileName>
 								</artifactItem>
