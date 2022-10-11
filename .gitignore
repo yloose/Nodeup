@@ -33,3 +33,4 @@ target/
 hs_err_pid*
 dependency-reduced-pom.xml
 node_modules/
+pom.xml.versionsBackup
