@@ -43,5 +43,6 @@ jobs:
           title: "Release build"
           files: |
             LICENSE.txt
-            config.xml
-            *.jar
+            updateConfigBuilder/target/config.xml
+            server/target/nodeup-server*.jar
+            bootstrap/target/nodeup-bootstrap*.jar
