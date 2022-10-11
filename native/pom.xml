@@ -11,6 +11,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<native.source.filename>de_yloose_nodeup_networking_NetworkService.c</native.source.filename>
+		<native.compiler.executable>/usr/bin/gcc</native.compiler.executable>
+		<native.platform.specific.include></native.platform.specific.include>
+		<native.platform.specific.lib></native.platform.specific.lib>
 	</properties>
 
 	<parent>
@@ -20,6 +23,14 @@
 	</parent>
 
 	<profiles>
+		<profile>
+			<id>aarch64</id>
+			<properties>
+				<native.compiler.executable>/usr/bin/aarch64-linux-gnu-gcc</native.compiler.executable>
+				<native.platform.specific.include>-I ${env.HOME}/cache/libpcap/include</native.platform.specific.include>
+				<native.platform.specific.lib>-L${env.HOME}/cache/libpcap/lib</native.platform.specific.lib>
+			</properties>
+		</profile>
 		<profile>
 			<id>fakeNetwork</id>
 			<properties>
@@ -47,13 +58,16 @@
 							</fileNames>
 						</source>
 					</sources>
+					<compilerExecutable>${native.compiler.executable}</compilerExecutable>
 					<compilerStartOptions>
 						<compilerStartOption>-I ${JAVA_HOME}/include/</compilerStartOption>
 						<compilerStartOption>-I ${JAVA_HOME}/include/linux/</compilerStartOption>
+						<compilerStartOption>${native.platform.specific.include}</compilerStartOption>
 					</compilerStartOptions>
 					<compilerEndOptions>
 						<compilerEndOption>-fPIC</compilerEndOption>
 					</compilerEndOptions>
+					<linkerExecutable>${native.compiler.executable}</linkerExecutable>
 					<linkerStartOptions>
 						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
@@ -62,7 +76,8 @@
 					<linkerEndOptions>
 						<linkerEndOption>-shared</linkerEndOption>
 						<linkerEndOption>-fPIC</linkerEndOption>
-						<linkerEndOption>-lpcap</linkerEndOption>
++						<linkerEndOption>-lpcap</linkerEndOption>
+						<linkerEndOption>${native.platform.specific.lib}</linkerEndOption>
 					</linkerEndOptions>
 				</configuration>
 			</plugin>
