@@ -86,6 +86,9 @@ jobs:
        - name: Build with maven for x86
          run: mvn --batch-mode --update-snapshots -P updateConfigBuilder package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
+       - name: Maven clean nodeup-native
+         run: mvn -pl native clean
+         
        - name: Build with maven for aarch64
          run: mvn -e --batch-mode --update-snapshots -P aarch64 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
