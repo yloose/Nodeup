@@ -39,7 +39,7 @@ jobs:
          with:
             path: |
               ~/cache/libpcap/**/*
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles("~/cache/libpcap/lib/libpcap.a") }}
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/cache/libpcap/lib/libpcap.a') }}
             
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
