@@ -62,7 +62,7 @@
 					<compilerStartOptions>
 						<compilerStartOption>-I ${JAVA_HOME}/include/</compilerStartOption>
 						<compilerStartOption>-I ${JAVA_HOME}/include/linux/</compilerStartOption>
-						<compilerStartOption>-I ${native.platform.specific.include}</compilerStartOption>
+						<compilerStartOption>${native.platform.specific.include}</compilerStartOption>
 					</compilerStartOptions>
 					<compilerEndOptions>
 						<compilerEndOption>-fPIC</compilerEndOption>
@@ -71,7 +71,7 @@
 					<linkerStartOptions>
 						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
-						<linkerStartOption>${JAVA_HOME}/lib/</linkerStartOption>
+						<linkerStartOption>-I ${JAVA_HOME}/lib/</linkerStartOption>
 					</linkerStartOptions>
 					<linkerEndOptions>
 						<linkerEndOption>-shared</linkerEndOption>
