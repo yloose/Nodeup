@@ -1,9 +1,12 @@
 package de.yloose.nodeup.updateConfigBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -23,16 +26,23 @@ public class UpdateConfigBuilder {
 			LOG.info("Failed to read application properties.");
 			return;
 		}
-		String nodeupJar = props.getProperty("nodeup-server.file.path");
+		String nodeupJarDirString = props.getProperty("nodeup-server.folder.path");
 		String configxml = props.getProperty("configxml.file.path");
+		
+		File nodeupJarDir = new File(nodeupJarDirString);
+		List<File> nodeupJars = Arrays.asList(nodeupJarDir.listFiles((d, name) -> name.startsWith("nodeup-server-") && name.endsWith(".jar")));
 
-		Configuration config = Configuration.builder()
+		Configuration.Builder configBuilder = Configuration.builder()
 				.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
 				.basePath("${user.dir}/${app.name}-update")
 				.property("app.name", "Nodeup")
-				.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher")
-				.file(FileMetadata.readFrom(nodeupJar).path("Nodeup.jar").uri("/nodeup.jar").classpath())
-				.build();
+				.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher");
+		
+		for (File jar : nodeupJars) {
+			configBuilder.file(FileMetadata.readFrom(jar.getAbsolutePath()).path("Nodeup.jar").uri(jar.getName()).classpath());
+		}
+		
+		Configuration config = configBuilder.build();
 
 		try (Writer out = Files.newBufferedWriter(Paths.get(configxml))) {
 			config.write(out);
