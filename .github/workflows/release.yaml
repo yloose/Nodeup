@@ -71,9 +71,6 @@ jobs:
            cd ~/cache/libnl
            sudo cp -r ./include/* /usr/aarch64-linux-gnu/include/
            sudo cp -r ./lib/* /usr/aarch64-linux-gnu/lib/
-           tree /usr/aarch64-linux-gnu
-           ls /usr/aarch64-linux-gnu/include/libnl3/netlink/genl
-           echo | aarch64-linux-gnu-gcc -E -Wp,-v -
             
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
