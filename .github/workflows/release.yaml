@@ -31,6 +31,16 @@ jobs:
        - name: Install libpcap dependency
          run: sudo apt-get install -y libpcap-dev
          
+       - name: Cache libnl aarch64 dependency
+         id: cache-libnl
+         uses: actions/cache@v3
+         env:
+            cache-name: cache-libnl
+         with:
+            path: |
+              ~/cache/libnl/**/*
+            key: ${{ runner.os }}-build-${{ env.cache-name }}
+         
        - name: Cache libpcap aarch64 dependency
          id: cache-libpcap
          uses: actions/cache@v3
@@ -41,6 +51,24 @@ jobs:
               ~/cache/libpcap/**/*
             key: ${{ runner.os }}-build-${{ env.cache-name }}
             
+            
+       - name: Download, compile libnl aarch64
+         if: ${{ steps.cache-libnl.outputs.cache-hit != 'true' }}
+         run: |
+           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libnl && mkdir -p ~/cache/libnl
+           git clone https://github.com/thom311/libnl.git && cd libnl
+           export CC=aarch64-linux-gnu-gcc
+           /bin/sh ./autogen.sh
+           /bin/sh ./configure --host=aarch64-linux-gnu --prefix=$HOME/cache/libnl
+           make
+           make install
+           
+       - name: Install libnl aarch64
+         run: |
+           cd ~/cache/libnl
+           sudo cp -r ./include/* /usr/aarch64-linux-gnu/include/
+           sudo cp -r ./lib/* /usr/aarch64-linux-gnu/lib/
+            
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
          run: |
@@ -48,7 +76,7 @@ jobs:
            mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap && mkdir -p ~/cache/libpcap
            git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
            export CC=aarch64-linux-gnu-gcc
-           /bin/sh ./configure --host=aarch64 --with-pcap=linux --prefix=$HOME/cache/libpcap
+           /bin/sh ./configure --host=aarch64-linux-gnu --with-pcap=linux --prefix=$HOME/cache/libpcap
            make
            make install
           
