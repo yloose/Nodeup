@@ -104,6 +104,6 @@ jobs:
           title: "Release build ${{ env.VERSION }}"
           files: |
             LICENSE.txt
-            updateConfigBuilder/target/config.xml
+            updateConfigBuilder/target/config*.xml
             server/target/nodeup-server*.jar
             bootstrap/target/nodeup-bootstrap*.jar

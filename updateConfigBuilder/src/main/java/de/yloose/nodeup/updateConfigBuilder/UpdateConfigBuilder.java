@@ -14,7 +14,7 @@ import org.update4j.Configuration;
 import org.update4j.FileMetadata;
 
 public class UpdateConfigBuilder {
-	
+
 	private static final Logger LOG = Logger.getLogger(UpdateConfigBuilder.class.getName());
 
 	public static void main(String[] args) {
@@ -27,27 +27,27 @@ public class UpdateConfigBuilder {
 			return;
 		}
 		String nodeupJarDirString = props.getProperty("nodeup-server.folder.path");
-		String configxml = props.getProperty("configxml.file.path");
-		
+		String configxmlDirString = props.getProperty("configxml.folder.path");
+
 		File nodeupJarDir = new File(nodeupJarDirString);
-		List<File> nodeupJars = Arrays.asList(nodeupJarDir.listFiles((d, name) -> name.startsWith("nodeup-server-") && name.endsWith(".jar")));
+		List<File> nodeupJars = Arrays.asList(
+				nodeupJarDir.listFiles((d, name) -> name.startsWith("nodeup-server-") && name.endsWith(".jar")));
 
-		Configuration.Builder configBuilder = Configuration.builder()
-				.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
-				.basePath("${user.dir}/${app.name}-update")
-				.property("app.name", "Nodeup")
-				.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher");
-		
 		for (File jar : nodeupJars) {
-			configBuilder.file(FileMetadata.readFrom(jar.getAbsolutePath()).path("Nodeup.jar").uri(jar.getName()).classpath());
-		}
-		
-		Configuration config = configBuilder.build();
-
-		try (Writer out = Files.newBufferedWriter(Paths.get(configxml))) {
-			config.write(out);
-		} catch (Exception e) {
-			LOG.info("Failed to write out config.txt");
+			String platform = jar.getName().replace("nodeup-server-", "").replace(".jar", "");
+			
+			Configuration config = Configuration.builder()
+					.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
+					.basePath("${user.dir}/${app.name}-update").property("app.name", "Nodeup")
+					.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher")
+					.file(FileMetadata.readFrom(jar.getAbsolutePath()).path("Nodeup.jar").uri(jar.getName()).classpath())
+					.build();
+					
+			try (Writer out = Files.newBufferedWriter(Paths.get(configxmlDirString + "config-" + platform + ".txt"))) {
+				config.write(out);
+			} catch (Exception e) {
+				LOG.info("Failed to write out config.txt");
+			}
 		}
 	}
 
