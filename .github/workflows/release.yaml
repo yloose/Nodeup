@@ -51,6 +51,9 @@ jobs:
               ~/cache/libpcap/**/*
             key: ${{ runner.os }}-build-${{ env.cache-name }}
             
+       - name: Install aarch64 cross compiler
+         if: ${{ step.cache-libpcap.outputs.cache-hit != 'true' || steps.cache-libnl.outputs.cache-hit != 'true' }}
+         run: sudo apt install gcc-aarch64-linux-gnu
             
        - name: Download, compile libnl aarch64
          if: ${{ steps.cache-libnl.outputs.cache-hit != 'true' }}
@@ -72,7 +75,6 @@ jobs:
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
          run: |
-           sudo apt install gcc-aarch64-linux-gnu
            mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap && mkdir -p ~/cache/libpcap
            git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
            export CC=aarch64-linux-gnu-gcc
