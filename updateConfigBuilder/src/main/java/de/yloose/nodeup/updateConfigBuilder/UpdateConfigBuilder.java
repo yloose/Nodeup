@@ -34,6 +34,7 @@ public class UpdateConfigBuilder {
 				nodeupJarDir.listFiles((d, name) -> name.startsWith("nodeup-server-") && name.endsWith(".jar")));
 
 		for (File jar : nodeupJars) {
+			LOG.info("Generating config for " + jar.getName());
 			String platform = jar.getName().replace("nodeup-server-", "").replace(".jar", "");
 			
 			Configuration config = Configuration.builder()
@@ -43,10 +44,11 @@ public class UpdateConfigBuilder {
 					.file(FileMetadata.readFrom(jar.getAbsolutePath()).path("Nodeup.jar").uri(jar.getName()).classpath())
 					.build();
 					
-			try (Writer out = Files.newBufferedWriter(Paths.get(configxmlDirString + "config-" + platform + ".txt"))) {
+			try (Writer out = Files.newBufferedWriter(Paths.get(configxmlDirString + "config-" + platform + ".xml"))) {
 				config.write(out);
+				LOG.info("Successufully wrote out config-" + platform + ".xml");
 			} catch (Exception e) {
-				LOG.info("Failed to write out config.txt");
+				LOG.info("Failed to write out config.xml");
 			}
 		}
 	}
