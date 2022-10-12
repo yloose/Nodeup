@@ -50,13 +50,14 @@ jobs:
            export CC=aarch64-linux-gnu-gcc
            /bin/sh ./configure --host=aarch64 --with-pcap=linux --prefix=$HOME/cache/libpcap
            make
+           make install
           
       
        - name: Build with maven for x86
          run: mvn --batch-mode --update-snapshots -P updateConfigBuilder package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
        - name: Build with maven for aarch64
-         run: mvn --batch-mode --update-snapshots -P aarch64 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+         run: mvn -e --batch-mode --update-snapshots -P aarch64 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
        - name: Generate update config.xml
          run: java -jar ./updateConfigBuilder/target/update-config-builder-jar-with-dependencies.jar
