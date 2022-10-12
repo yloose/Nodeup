@@ -55,7 +55,7 @@ jobs:
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' || steps.cache-libnl.outputs.cache-hit != 'true' }}
          run: sudo apt install gcc-aarch64-linux-gnu
             
-       - name: Download, compile libnl aarch64
+       - name: Download and compile libnl aarch64
          if: ${{ steps.cache-libnl.outputs.cache-hit != 'true' }}
          run: |
            mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libnl && mkdir -p ~/cache/libnl
