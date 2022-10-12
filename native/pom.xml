@@ -27,8 +27,8 @@
 			<id>aarch64</id>
 			<properties>
 				<native.compiler.executable>/usr/bin/aarch64-linux-gnu-gcc</native.compiler.executable>
-				<native.platform.specific.include>${env.HOME}/cache/libpcap/include</native.platform.specific.include>
-				<native.platform.specific.lib>${env.HOME}/cache/libpcap/lib</native.platform.specific.lib>
+				<native.platform.specific.include>-I ${env.HOME}/cache/libpcap/include</native.platform.specific.include>
+				<native.platform.specific.lib>-L${env.HOME}/cache/libpcap/lib</native.platform.specific.lib>
 			</properties>
 		</profile>
 		<profile>
@@ -71,13 +71,13 @@
 					<linkerStartOptions>
 						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
-						<linkerStartOption>-I ${JAVA_HOME}/lib/</linkerStartOption>
+						<linkerStartOption>${JAVA_HOME}/lib/</linkerStartOption>
 					</linkerStartOptions>
 					<linkerEndOptions>
 						<linkerEndOption>-shared</linkerEndOption>
 						<linkerEndOption>-fPIC</linkerEndOption>
 +						<linkerEndOption>-lpcap</linkerEndOption>
-						<linkerEndOption>-L${native.platform.specific.lib}</linkerEndOption>
+						<linkerEndOption>${native.platform.specific.lib}</linkerEndOption>
 					</linkerEndOptions>
 				</configuration>
 			</plugin>
