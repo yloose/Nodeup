@@ -24,7 +24,7 @@ public class Nodeup {
 		} catch (UnsatisfiedLinkError e) {
 			LOG.info("No native library found, trying to extract library from jar.");
 			try {
-				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/x86/libWeatherstation.so");
+				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/libWeatherstation.so");
 			} catch (IOException e2) {
 				LOG.error("Cannot load native library.", e2);
 			}

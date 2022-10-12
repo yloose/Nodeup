@@ -124,7 +124,7 @@
 									<destFileName>libNodeup.so</destFileName>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>${project.build.directory}/classes/libs/x86</outputDirectory>
+							<outputDirectory>${project.build.directory}/classes/libs</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
