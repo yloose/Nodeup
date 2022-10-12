@@ -71,6 +71,8 @@ jobs:
            cd ~/cache/libnl
            sudo cp -r ./include/* /usr/aarch64-linux-gnu/include/
            sudo cp -r ./lib/* /usr/aarch64-linux-gnu/lib/
+           sudo apt install tree
+           tree /usr/aarch64-linux-gnu
             
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
