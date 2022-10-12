@@ -52,7 +52,7 @@ jobs:
             key: ${{ runner.os }}-build-${{ env.cache-name }}
             
        - name: Install aarch64 cross compiler
-         if: ${{ step.cache-libpcap.outputs.cache-hit != 'true' || steps.cache-libnl.outputs.cache-hit != 'true' }}
+         if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' || steps.cache-libnl.outputs.cache-hit != 'true' }}
          run: sudo apt install gcc-aarch64-linux-gnu
             
        - name: Download, compile libnl aarch64
