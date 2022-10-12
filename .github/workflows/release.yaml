@@ -39,13 +39,13 @@ jobs:
          with:
             path: |
               ~/cache/libpcap/**/*
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/cache/libpcap/lib/libpcap.a') }}
+            key: ${{ runner.os }}-build-${{ env.cache-name }} }}
             
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
          run: |
            sudo apt install gcc-aarch64-linux-gnu
-           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap && mkdir ~/cache/libpcap
+           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap && mkdir -p ~/cache/libpcap
            git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
            export CC=aarch64-linux-gnu-gcc
            /bin/sh ./configure --host=aarch64 --with-pcap=linux --prefix=~/cache/libpcap
