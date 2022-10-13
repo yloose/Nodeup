@@ -13,7 +13,7 @@ import org.update4j.UpdateOptions.ArchiveUpdateOptions;
 
 public class Bootstrap {
 	
-	public static final String CONFIG_URL = "https://github.com/yloose/Nodeup/releases/download/latest/";
+	public static final String CONFIG_PATH = "https://github.com/yloose/Nodeup/releases/download/latest/";
 
 	public static void main(String[] args) {
 		while (true) {
@@ -46,11 +46,21 @@ public class Bootstrap {
 	public static String getArch() {
 		return System.getProperty("os.arch");
 	}
+	
 
 	public static Configuration loadConfig() {
+		String fileName = "";
+		
+		try {
+			fileName = "config-" + getPlatform() + ".xml";
+		} catch (UnsupportedArchitectureException e) {
+			System.err.println("Failed to get system architecture: " + e.getMessage());
+			System.exit(-1);
+		}
+		
 		Configuration config = null;
 		try {
-			URL configUrl = new URL(CONFIG_URL);
+			URL configUrl = new URL(CONFIG_PATH + fileName);
 			Reader in = new InputStreamReader(configUrl.openStream(), StandardCharsets.UTF_8);
 			config = Configuration.read(in);
 		} catch (IOException e) {
@@ -58,5 +68,29 @@ public class Bootstrap {
 			// TODO: Handle error
 		}
 		return config;
+	}
+	
+	public static String getPlatform() throws UnsupportedArchitectureException {
+		String arch = System.getProperty("os.arch");
+		switch (arch) {
+		
+		case "x86_64":
+			return "amd64";
+		case "amd64":
+			return "amd64";
+			
+		case "arm":
+			return "armv7";
+			
+		case "arm64":
+			return "aarch64";
+		case "aarch64":
+			return "aarch64";
+		case "armv8":
+			return "aarch64";
+		
+		default:
+			throw new UnsupportedArchitectureException("Current platform: " + arch + " is not supported.");
+		}
 	}
 }
