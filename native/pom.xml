@@ -34,7 +34,7 @@
 		<profile>
 			<id>armv7</id>
 			<properties>
-				<native.compiler.executable>/usr/bin/arm-none-eabi-gcc</native.compiler.executable>
+				<native.compiler.executable>/usr/bin/arm-linux-gnueabihf-gcc</native.compiler.executable>
 				<native.platform.specific.include>-I ${env.HOME}/cache/libpcap32bit/include</native.platform.specific.include>
 				<native.platform.specific.lib>-L${env.HOME}/cache/libpcap32bit/lib</native.platform.specific.lib>
 			</properties>
