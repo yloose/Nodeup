@@ -79,14 +79,14 @@ jobs:
            make install
            
        - name: Install libnl aarch64
-         if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
+         if: ${{ steps.cache-libpcap64bit.outputs.cache-hit != 'true' }}
          run: |
            cd ~/cache/libnl
            sudo cp -r ./include/* /usr/aarch64-linux-gnu/include/
            sudo cp -r ./lib/* /usr/aarch64-linux-gnu/lib/
             
        - name: Download and compile libpcap aarch64
-         if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
+         if: ${{ steps.cache-libpcap64bit.outputs.cache-hit != 'true' }}
          run: |
            mkdir -p ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap64bit && mkdir -p ~/cache/libpcap64bit
            rm -rf ~/tmp/libpcap && git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
@@ -96,7 +96,7 @@ jobs:
            make install
            
        - name: Download and compile libpcap armv7
-         if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
+         if: ${{ steps.cache-libpcap32bit.outputs.cache-hit != 'true' }}
          run: |
            mkdir -p ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap32bit && mkdir -p ~/cache/libpcap32bit
            rm -rf ~/tmp/libpcap && git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
