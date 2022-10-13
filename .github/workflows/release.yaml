@@ -95,6 +95,9 @@ jobs:
            make
            make install
            
+       - name: Install libc6-armv7
+         run: sudo apt-get install libnewlib-arm-none-eabi
+           
        - name: Download and compile libpcap armv7
          if: ${{ steps.cache-libpcap32bit.outputs.cache-hit != 'true' }}
          continue-on-error: true
@@ -102,7 +105,7 @@ jobs:
            mkdir -p ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap32bit && mkdir -p ~/cache/libpcap32bit
            rm -rf ~/tmp/libpcap && git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
            export CC=arm-none-eabi-gcc
-           /bin/bash -c "/bin/sh ./configure --host=arm-linux --with-pcap=linux --prefix=$HOME/cache/libpcap32bit || :"
+           /bin/sh ./configure --host=arm-linux --with-pcap=linux --prefix=$HOME/cache/libpcap32bit
            make
            make install
       
