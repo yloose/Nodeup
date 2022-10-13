@@ -42,17 +42,30 @@ jobs:
             key: ${{ runner.os }}-build-${{ env.cache-name }}
          
        - name: Cache libpcap aarch64 dependency
-         id: cache-libpcap
+         id: cache-libpcap64bit
          uses: actions/cache@v3
          env:
-            cache-name: cache-libpcap
+            cache-name: cache-libpcap64bit
          with:
             path: |
-              ~/cache/libpcap/**/*
+              ~/cache/libpcap64bit/**/*
+            key: ${{ runner.os }}-build-${{ env.cache-name }}
+       
+       - name: Cache libpcap armv7 dependency
+         id: cache-libpcap32bit
+         uses: actions/cache@v3
+         env:
+            cache-name: cache-libpcap32bit
+         with:
+            path: |
+              ~/cache/libpcap32bit/**/*
             key: ${{ runner.os }}-build-${{ env.cache-name }}
             
        - name: Install aarch64 cross compiler
          run: sudo apt install gcc-aarch64-linux-gnu
+         
+       - name: Install armv7 corss compiler
+         run: sudo apt install gcc-arm-none-eabi
             
        - name: Download and compile libnl aarch64
          if: ${{ steps.cache-libnl.outputs.cache-hit != 'true' }}
@@ -75,13 +88,22 @@ jobs:
        - name: Download and compile libpcap aarch64
          if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
          run: |
-           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap && mkdir -p ~/cache/libpcap
-           git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
+           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap64bit && mkdir -p ~/cache/libpcap64bit
+           rm -rf ~/tmp/libpcap && git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
            export CC=aarch64-linux-gnu-gcc
-           /bin/sh ./configure --host=aarch64-linux-gnu --with-pcap=linux --prefix=$HOME/cache/libpcap CFLAGS="-I/usr/aarch64-linux-gnu/include/libnl3" LDFLAGS="-L/usr/aarch64-linux-gnu/lib" 
+           /bin/sh ./configure --host=aarch64-linux-gnu --with-pcap=linux --prefix=$HOME/cache/libpcap64bit CFLAGS="-I/usr/aarch64-linux-gnu/include/libnl3" LDFLAGS="-L/usr/aarch64-linux-gnu/lib" 
            make
            make install
-          
+           
+       - name: Download and compile libpcap armv7
+         if: ${{ steps.cache-libpcap.outputs.cache-hit != 'true' }}
+         run: |
+           mkdir ~/tmp && cd ~/tmp && rm -rf ~/cache/libpcap32bit && mkdir -p ~/cache/libpcap32bit
+           rm -rf ~/tmp/libpcap && git clone https://github.com/the-tcpdump-group/libpcap.git && cd libpcap
+           export CC=arm-none-eabi-gcc
+           /bin/sh ./configure --host=arm-linux --with-pcap=linux --prefix=$HOME/cache/libpcap32bit 
+           make
+           make install
       
        - name: Build with maven for amd64
          run: mvn --batch-mode --update-snapshots -P updateConfigBuilder package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
@@ -91,6 +113,12 @@ jobs:
          
        - name: Build with maven for aarch64
          run: mvn -e --batch-mode --update-snapshots -P aarch64 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+         
+       - name: Build with maven for armv7
+         run: mvn -e --batch-mode --update-snapshots -P armv7 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+         
+       - name: Maven clean nodeup-native
+         run: mvn -pl native clean
          
        - name: Generate update config.xml
          run: java -jar ./updateConfigBuilder/target/update-config-builder-jar-with-dependencies.jar
@@ -106,4 +134,4 @@ jobs:
             LICENSE.txt
             updateConfigBuilder/target/config*.xml
             server/target/nodeup-server*.jar
-            bootstrap/target/nodeup-bootstrap*.jar
+            bootstrap/target/nodeup-bootstrap*.jar%  
