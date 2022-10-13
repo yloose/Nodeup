@@ -135,4 +135,4 @@ jobs:
             LICENSE.txt
             updateConfigBuilder/target/config*.xml
             server/target/nodeup-server*.jar
-            bootstrap/target/nodeup-bootstrap*.jar%  
+            bootstrap/target/nodeup-bootstrap.jar
