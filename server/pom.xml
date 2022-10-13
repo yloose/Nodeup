@@ -26,6 +26,12 @@
 				<output.jarName>nodeup-server-aarch64</output.jarName>
 			</properties>
 		</profile>
+		<profile>
+			<id>armv7</id>
+			<properties>
+				<output.jarName>nodeup-server-armv7</output.jarName>
+			</properties>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
