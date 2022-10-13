@@ -95,6 +95,9 @@ jobs:
            make
            make install
            
+       - name: Install libc6-armhf
+         run: sudo apt install libc6-armhf
+           
        - name: Download and compile libpcap armv7
          if: ${{ steps.cache-libpcap32bit.outputs.cache-hit != 'true' }}
          run: |
