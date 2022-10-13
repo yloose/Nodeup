@@ -83,7 +83,7 @@ jobs:
            make install
           
       
-       - name: Build with maven for x86
+       - name: Build with maven for amd64
          run: mvn --batch-mode --update-snapshots -P updateConfigBuilder package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
        - name: Maven clean nodeup-native

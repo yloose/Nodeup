@@ -10,7 +10,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		
-		<output.jarName>nodeup-server-x86</output.jarName>
+		<output.jarName>nodeup-server-amd64</output.jarName>
 	</properties>
 
 	<parent>
