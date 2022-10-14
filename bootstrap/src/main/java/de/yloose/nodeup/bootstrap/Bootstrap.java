@@ -33,7 +33,7 @@ public class Bootstrap {
 		config.update(ArchiveUpdateOptions.archive(FileSystems.getDefault().getPath("nodeup-update.zip")));
 		try {
 			if (config.requiresUpdate()) {
-				Archive.read("node-update.zip").install();
+				Archive.read("nodeup-update.zip").install();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,11 +42,6 @@ public class Bootstrap {
 
 		config.launch();
 	}
-	
-	public static String getArch() {
-		return System.getProperty("os.arch");
-	}
-	
 
 	public static Configuration loadConfig() {
 		String fileName = "";
@@ -70,8 +65,12 @@ public class Bootstrap {
 		return config;
 	}
 	
+	public static String getArch() {
+		return System.getProperty("os.arch");
+	}
+	
 	public static String getPlatform() throws UnsupportedArchitectureException {
-		String arch = System.getProperty("os.arch");
+		String arch = getArch();
 		switch (arch) {
 		
 		case "x86_64":

@@ -73,7 +73,6 @@ int initialize_network_interface(const char *iface_name) {
 
 	for (size_t i = 0; i < count; i++) {
 		if (strcmp(iface_name, interfaces[i]) == 0) {
-			// if (strcmp(iface_name, interfaces[count]) == 0) {
 			// Check if monitor mode is enabled on interface
 			switch (check_monitor_mode(iface_name)) {
 			case 0:
