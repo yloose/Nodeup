@@ -18,19 +18,15 @@ public class Nodeup {
 	private static final Logger LOG = LoggerFactory.getLogger(Nodeup.class);
 
 	public static void main(String[] args) {
-
+		
 		try {
 			File lib = new File("../native/target/nodeup-native.so");
 			System.load(lib.getAbsolutePath());
 		} catch (UnsatisfiedLinkError e) {
 			LOG.info("No native library found, trying to extract library from jar.");
-			try {
-				System.setProperty("LD_LIBRARY_PATH", new File(Nodeup.class.getProtectionDomain().getCodeSource().getLocation()
-					    .toURI()).getParent() + "/libpcap.so");
-			} catch (URISyntaxException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			String res1 = Nodeup.class.getResource("/de/yloose/nodeup/Nodeup.class").getPath();
+			String res2 = res1.substring(5, res1.indexOf(".jar!"));
+			System.setProperty("LD_LIBRARY_PATH", res2 + "/libpcap.so");
 			try {
 				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/libNodeup.so");
 			} catch (IOException e2) {
