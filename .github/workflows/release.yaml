@@ -123,6 +123,7 @@ jobs:
          
        - name: Get libpcap.so's ready for upload.
          run: |
+            mkdir -p $GITHUB_WORKSPACE/target
             cp -L ~/cache/libpcap32bit/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-armv7.so
             cp -L ~/cache/libpcap64bit/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-aarch64.so
             cp -L /usr/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-amd64.so
