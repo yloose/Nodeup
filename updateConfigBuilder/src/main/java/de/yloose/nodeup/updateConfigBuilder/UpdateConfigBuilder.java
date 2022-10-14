@@ -27,7 +27,7 @@ public class UpdateConfigBuilder {
 			return;
 		}
 		String nodeupJarDirString = props.getProperty("nodeup-server.folder.path");
-		String targetDirString = props.getProperty("configxml.folder.path");
+		String targetDirString = props.getProperty("target.folder.path");
 
 		File nodeupJarDir = new File(nodeupJarDirString);
 		List<File> nodeupJars = Arrays.asList(
