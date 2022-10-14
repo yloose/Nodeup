@@ -121,6 +121,12 @@ jobs:
        - name: Build with maven for armv7
          run: mvn -e --batch-mode --update-snapshots -P armv7 package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
          
+       - name: Get libpcap.so's ready for upload.
+         run: |
+            cp -L ~/cache/libpcap32bit/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-armv7.so
+            cp -L ~/cache/libpcap64bit/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-aarch64.so
+            cp -L /usr/lib/libpcap.so $GITHUB_WORKSPACE/target/libpcap-amd64.so
+         
        - name: Generate update config.xml
          run: java -jar ./updateConfigBuilder/target/update-config-builder-jar-with-dependencies.jar
          
@@ -133,6 +139,7 @@ jobs:
           title: "Release build ${{ env.VERSION }}"
           files: |
             LICENSE.txt
+            target/libpcap-*.so
             updateConfigBuilder/target/config*.xml
             server/target/nodeup-server*.jar
             bootstrap/target/nodeup-bootstrap.jar

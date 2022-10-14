@@ -84,10 +84,8 @@
 					<linkerEndOptions>
 						<linkerEndOption>-shared</linkerEndOption>
 						<linkerEndOption>-fPIC</linkerEndOption>
-						<linkerEndOption>-Wl,--whole-archive</linkerEndOption>
 						<linkerEndOption>-lpcap</linkerEndOption>
 						<linkerEndOption>${native.platform.specific.lib}</linkerEndOption>
-						<linkerEndOption>-Wl,--no-whole-archive</linkerEndOption>
 					</linkerEndOptions>
 				</configuration>
 			</plugin>

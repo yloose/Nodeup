@@ -2,6 +2,7 @@ package de.yloose.nodeup;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,13 @@ public class Nodeup {
 			System.load(lib.getAbsolutePath());
 		} catch (UnsatisfiedLinkError e) {
 			LOG.info("No native library found, trying to extract library from jar.");
+			try {
+				System.setProperty("LD_LIBRARY_PATH", new File(Nodeup.class.getProtectionDomain().getCodeSource().getLocation()
+					    .toURI()).getParent() + "/libpcap.so");
+			} catch (URISyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			try {
 				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/libNodeup.so");
 			} catch (IOException e2) {

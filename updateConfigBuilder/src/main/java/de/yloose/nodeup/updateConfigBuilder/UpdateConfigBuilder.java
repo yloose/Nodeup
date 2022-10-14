@@ -27,7 +27,7 @@ public class UpdateConfigBuilder {
 			return;
 		}
 		String nodeupJarDirString = props.getProperty("nodeup-server.folder.path");
-		String configxmlDirString = props.getProperty("configxml.folder.path");
+		String targetDirString = props.getProperty("configxml.folder.path");
 
 		File nodeupJarDir = new File(nodeupJarDirString);
 		List<File> nodeupJars = Arrays.asList(
@@ -36,15 +36,17 @@ public class UpdateConfigBuilder {
 		for (File jar : nodeupJars) {
 			LOG.info("Generating config for " + jar.getName());
 			String platform = jar.getName().replace("nodeup-server-", "").replace(".jar", "");
+			File libpcap = new File(targetDirString + "libpcap-" + platform + ".so");
 			
 			Configuration config = Configuration.builder()
 					.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
 					.basePath("${user.dir}/${app.name}-update").property("app.name", "Nodeup")
 					.property("default.launcher.main.class", "org.springframework.boot.loader.JarLauncher")
 					.file(FileMetadata.readFrom(jar.getAbsolutePath()).path("Nodeup.jar").uri(jar.getName()).classpath())
+					.file(FileMetadata.readFrom(libpcap.getAbsolutePath()).path("libpcap.so").uri(libpcap.getName()))
 					.build();
 					
-			try (Writer out = Files.newBufferedWriter(Paths.get(configxmlDirString + "config-" + platform + ".xml"))) {
+			try (Writer out = Files.newBufferedWriter(Paths.get(targetDirString + "config-" + platform + ".xml"))) {
 				config.write(out);
 				LOG.info("Successufully wrote out config-" + platform + ".xml");
 			} catch (Exception e) {
@@ -52,5 +54,4 @@ public class UpdateConfigBuilder {
 			}
 		}
 	}
-
 }
