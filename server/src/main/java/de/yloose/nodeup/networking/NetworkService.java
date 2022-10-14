@@ -38,6 +38,10 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 		else if (ret == 1) {
 			LOG.error("Could not find network interface.");
 			return false;
+		}
+		else if (ret == -3) {
+			LOG.error("Not all commands needed to initialize network where found.");
+			return false;
 		} else {
 			deviceHandle = ret;
 			return true;

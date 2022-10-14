@@ -68,6 +68,9 @@ int initialize_network_interface(const char *iface_name) {
 	if (pclose(fp) != 0)
 		return -1;
 
+	if (strstr(cmd_out, "command not found") != NULL)
+		return -3;
+
 	char *interfaces[20];
 	int count = split_string(cmd_out, interfaces);
 
