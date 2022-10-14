@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 public class NativeLibraryLoader {
 
 	private static final int MIN_PREFIX_LENGTH = 3;
-	public static final String NATIVE_FOLDER_PATH_PREFIX = "WeatherstationNativeLibraries";
+	public static final String NATIVE_FOLDER_PATH_PREFIX = "NodeupNativeLibraries";
 
 	private static File temporaryDir;
 
