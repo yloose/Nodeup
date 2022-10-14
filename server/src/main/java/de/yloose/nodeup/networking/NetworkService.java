@@ -27,6 +27,7 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 	
 	public boolean init(String interfaceName) {
 		long ret = initNetworkInterface(interfaceName);
+		LOG.info("Init network interface return code: " + ret);
 		if (ret == -1) {
 			LOG.error("Failed to intialize network interface.");
 			return false;
