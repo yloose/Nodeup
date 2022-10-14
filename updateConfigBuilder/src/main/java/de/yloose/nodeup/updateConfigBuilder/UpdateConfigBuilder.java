@@ -28,6 +28,7 @@ public class UpdateConfigBuilder {
 		}
 		String nodeupJarDirString = props.getProperty("nodeup-server.folder.path");
 		String targetDirString = props.getProperty("target.folder.path");
+		String libpcapDirString = props.getProperty("libpcap.folder.path");
 
 		File nodeupJarDir = new File(nodeupJarDirString);
 		List<File> nodeupJars = Arrays.asList(
@@ -36,7 +37,7 @@ public class UpdateConfigBuilder {
 		for (File jar : nodeupJars) {
 			LOG.info("Generating config for " + jar.getName());
 			String platform = jar.getName().replace("nodeup-server-", "").replace(".jar", "");
-			File libpcap = new File(targetDirString + "libpcap-" + platform + ".so");
+			File libpcap = new File(libpcapDirString + "libpcap-" + platform + ".so");
 			
 			Configuration config = Configuration.builder()
 					.baseUri("https://github.com/yloose/Nodeup/releases/download/latest")
