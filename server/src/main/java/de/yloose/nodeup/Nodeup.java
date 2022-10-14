@@ -27,8 +27,6 @@ public class Nodeup {
 			LOG.info("No native library found, trying to extract library from jar.");
 			String res1 = Nodeup.class.getResource("/de/yloose/nodeup/Nodeup.class").getPath();
 			String res2 = res1.substring(5, res1.indexOf(".jar!"));
-			// SystemUtil.setEnv("LD_LIBRARY_PATH", res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
-			// System.setProperty("LD_LIBRARY_PATH", res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
 			System.load(res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
 			try {
 				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/libNodeup.so");
