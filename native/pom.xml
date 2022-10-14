@@ -77,7 +77,6 @@
 					</compilerEndOptions>
 					<linkerExecutable>${native.compiler.executable}</linkerExecutable>
 					<linkerStartOptions>
-						<linkerStartOption>-static</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/include/</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/include/linux/</linkerStartOption>
 						<linkerStartOption>-I ${JAVA_HOME}/lib/</linkerStartOption>
@@ -85,8 +84,10 @@
 					<linkerEndOptions>
 						<linkerEndOption>-shared</linkerEndOption>
 						<linkerEndOption>-fPIC</linkerEndOption>
-+						<linkerEndOption>-lpcap</linkerEndOption>
+						<linkerEndOption>-Wl,--whole-archive</linkerEndOption>
+						<linkerEndOption>-lpcap</linkerEndOption>
 						<linkerEndOption>${native.platform.specific.lib}</linkerEndOption>
+						<linkerEndOption>-Wl,--no-whole-archive</linkerEndOption>
 					</linkerEndOptions>
 				</configuration>
 			</plugin>
