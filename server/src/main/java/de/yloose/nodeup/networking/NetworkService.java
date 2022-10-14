@@ -27,13 +27,16 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 	
 	public boolean init(String interfaceName) {
 		long ret = initNetworkInterface(interfaceName);
-		LOG.info("Init network interface return code: " + ret);
 		if (ret == -1) {
 			LOG.error("Failed to intialize network interface.");
 			return false;
 		}
 		else if (ret == -2) {
 			LOG.error("Failed to open network interface.");
+			return false;
+		}
+		else if (ret == 1) {
+			LOG.error("Could not find network interface.");
 			return false;
 		} else {
 			deviceHandle = ret;
