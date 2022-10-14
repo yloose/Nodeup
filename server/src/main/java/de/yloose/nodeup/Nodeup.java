@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import de.yloose.nodeup.lib.NativeLibraryLoader;
+import de.yloose.nodeup.util.SystemUtil;
 
 @SpringBootApplication
 public class Nodeup {
@@ -26,7 +27,9 @@ public class Nodeup {
 			LOG.info("No native library found, trying to extract library from jar.");
 			String res1 = Nodeup.class.getResource("/de/yloose/nodeup/Nodeup.class").getPath();
 			String res2 = res1.substring(5, res1.indexOf(".jar!"));
-			System.setProperty("LD_LIBRARY_PATH", res2 + "/libpcap.so");
+			// SystemUtil.setEnv("LD_LIBRARY_PATH", res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
+			// System.setProperty("LD_LIBRARY_PATH", res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
+			System.loadLibrary(res2.substring(0, res2.lastIndexOf("/")) + "/libpcap.so");
 			try {
 				NativeLibraryLoader.loadLibraryFromJar("/BOOT-INF/classes/libs/libNodeup.so");
 			} catch (IOException e2) {
