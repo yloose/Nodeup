@@ -27,9 +27,11 @@ public class ManagementFrame {
 		this.bssid = Arrays.copyOfRange(frame, 16, 22);
 		this.seq_ctrl = Arrays.copyOfRange(frame, 22, 24);
 		
-		this.actionFrame = ActionFrameFactory.createActionFrame(Arrays.copyOfRange(frame, 24, frame.length - 4));
+		this.actionFrame = ActionFrameFactory.createActionFrame(Arrays.copyOfRange(frame, 24, 289));
 		
-		this.fcs = Arrays.copyOfRange(frame, frame.length - 4, frame.length);
+		if (frame.length > 285) {
+			this.fcs = Arrays.copyOfRange(frame, frame.length - 4, frame.length);
+		}
 	}
 	
 	public ManagementFrame(int subtype, byte[] destination, byte[] source) {
