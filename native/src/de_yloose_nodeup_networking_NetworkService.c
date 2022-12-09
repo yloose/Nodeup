@@ -43,10 +43,11 @@ int enable_monitor_mode(const char *iface_name) {
 int check_monitor_mode(const char *iface_name) {
 	char cmd[100];
 	snprintf(cmd, sizeof(cmd), "%s%s%s", "iw ", iface_name,
-			" info | awk '/type/' | sed 's/\\stype//'");
+			" info | awk '/type/' | sed 's/\\stype\\s//' | tr -d '\\n'");
 	FILE *fp = popen(cmd, "r");
 	char cmd_out[50];
 	fgets(cmd_out, 50, fp);
+
 	if (pclose(fp) != 0)
 		return -1;
 
