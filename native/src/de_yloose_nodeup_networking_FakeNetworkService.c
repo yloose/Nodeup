@@ -11,7 +11,7 @@
 #include <ctype.h>
 
 #define BACKLOG 5
-#define BUF_SIZE 2048
+#define BUF_SIZE 4096
 
 struct ieee80211_mgmt {
 	uint16_t frame_control;
@@ -171,15 +171,13 @@ char *buildFrame(int datapoint_cnt) {
 }
 
 
-void send_packets_to_server(JNIEnv *env, jobject thisObject, int cnt) {
+void send_packets_to_server(JNIEnv *env, jobject thisObject, char* data, int size) {
 
-	char *packet = buildFrame(cnt);
-	int packet_size = sizeof(uint8_t) * 18 + sizeof(struct ieee80211_mgmt);
 
-	jbyteArray ret_packet = (*env)->NewByteArray(env, packet_size);
+	jbyteArray ret_packet = (*env)->NewByteArray(env, size);
 
 	void *temp = (*env)->GetByteArrayElements(env, (jarray) ret_packet, 0);
-	memcpy(temp, packet, packet_size);
+	memcpy(temp, data, size);
 	(*env)->ReleaseByteArrayElements(env, ret_packet, temp, 0);
 
 	jclass networkHandler = (*env)->FindClass(env,
@@ -187,10 +185,19 @@ void send_packets_to_server(JNIEnv *env, jobject thisObject, int cnt) {
 	jmethodID packet_callback = (*env)->GetMethodID(env, networkHandler,
 			"nativeRecvPacketCallback", "([B)V");
 
-	free(packet);
 
 	(*env)->CallVoidMethod(env, thisObject, packet_callback, ret_packet);
 }
+
+void fake_packets_to_server(JNIEnv *env, jobject thisObject, int cnt) {
+	char *packet = buildFrame(cnt);
+	int packet_size = sizeof(uint8_t) * 18 + sizeof(struct ieee80211_mgmt);
+
+	send_packets_to_server(env, thisObject, packet, packet_size);
+
+	free(packet);
+}
+
 
 int digits_only(const char *s) {
 	while (*s != '\n') {
@@ -217,17 +224,24 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startList
 				continue;
 			}
 
-			int datapoint_cnt;
-			sscanf(buf, "%d", &datapoint_cnt);
-			if (datapoint_cnt > 35) {
-				send(cfd, "Maximum of 35.\n", 15, 0);
-				continue;
-			}
-			send_packets_to_server(env, thisObject, datapoint_cnt);
+			if (numRead > 800) {
+				// Send data is interpreted as a packet
+				send_packets_to_server(env, thisObject, buf, numRead);
 
-			char send_buf[50];
-			snprintf(send_buf, 50, "Successfully faked %d datapoints.\n", datapoint_cnt);
-			send(cfd, send_buf, strlen(send_buf), 0);
+			} else {
+				// Send data is interpreted as a number of datapoints to fake
+				int datapoint_cnt;
+				sscanf(buf, "%d", &datapoint_cnt);
+				if (datapoint_cnt > 35) {
+					send(cfd, "Maximum of 35.\n", 15, 0);
+					continue;
+				}
+				fake_packets_to_server(env, thisObject, datapoint_cnt);
+
+				char send_buf[50];
+				snprintf(send_buf, 50, "Successfully faked %d datapoints.\n", datapoint_cnt);
+				send(cfd, send_buf, strlen(send_buf), 0);
+			}
 		}
 
 		if (numRead == -1) {
