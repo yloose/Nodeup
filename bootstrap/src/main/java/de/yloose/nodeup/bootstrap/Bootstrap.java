@@ -13,7 +13,7 @@ import org.update4j.UpdateOptions.ArchiveUpdateOptions;
 
 public class Bootstrap {
 
-	public static final String CONFIG_PATH = "http://github.com/yloose/Nodeup/releases/download/latest/";
+	public static final String CONFIG_PATH = "https://github.com/yloose/Nodeup/releases/download/latest/";
 
 	public static void main(String[] args) {
 
