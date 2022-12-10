@@ -21,7 +21,7 @@ public class DatasinkEntity {
 	@Column(columnDefinition = "BINARY(16)")
 	private UUID id;
 	
-	@Column(unique = true)
+	@Column(unique = true, columnDefinition = "BINARY(16)")
 	private UUID sinkId;
 	
 	private String displayName;
