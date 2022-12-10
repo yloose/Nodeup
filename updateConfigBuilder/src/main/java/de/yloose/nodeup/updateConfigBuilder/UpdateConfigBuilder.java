@@ -3,6 +3,7 @@ package de.yloose.nodeup.updateConfigBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public class UpdateConfigBuilder {
 					.file(FileMetadata.readFrom(libpcap.getAbsolutePath()).path("libpcap.so").uri(libpcap.getName()))
 					.build();
 					
-			try (Writer out = Files.newBufferedWriter(Paths.get(targetDirString + "config-" + platform + ".xml"))) {
+			try (Writer out = Files.newBufferedWriter(Paths.get(targetDirString + "config-" + platform + ".xml"), StandardCharsets.UTF_8)) {
 				config.write(out);
 				LOG.info("Successufully wrote out config-" + platform + ".xml");
 			} catch (Exception e) {
