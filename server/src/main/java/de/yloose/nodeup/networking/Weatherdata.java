@@ -66,9 +66,14 @@ public class Weatherdata {
 
 		public WeatherDatapointDto(byte[] data) {
 			this.temperature = Integer.valueOf(bytesToInt(Arrays.copyOfRange(data, 0, 2))).floatValue() / 100 - 40;
-			this.humidity = Integer.valueOf(bytesToInt(Arrays.copyOfRange(data, 2, 4))).floatValue() / 100;
+			this.humidity = Integer.valueOf(bytesToInt(Arrays.copyOfRange(data, 2, 4))).floatValue() / 1000;
 			this.pressure = Integer.valueOf(bytesToInt(Arrays.copyOfRange(data, 4, 6))).floatValue() / 100 + 600;
-			this.voltage = (Integer.valueOf(data[6]).floatValue() + 250) / 100;
+			if (data[6] < 0) {
+				this.voltage = (Integer.valueOf(256 + data[6]).floatValue() + 250) / 100;
+
+			} else {
+				this.voltage = (Integer.valueOf(data[6]).floatValue() + 250) / 100;
+			}
 		}
 
 		// Changes endianess
