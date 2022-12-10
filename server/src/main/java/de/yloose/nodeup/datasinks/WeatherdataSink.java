@@ -13,15 +13,13 @@ public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoin
 
 	private Flow.Subscription subscription;
 
-	public UUID sinkId;
-
 	public abstract void handleData(WeatherDatapoints datapoints, Map<String, Object> config);
 
 	private Optional<Map<String, Object>> getSinkConfig(NodeEntity node) {
 		Optional<Map<String, Object>> sinkConfig = Optional.empty();
 
 		for (NodeDatasinkConfigLinker linker : node.getDatasinksConfigs()) {
-			if (linker.getDatasink().getSinkId().equals(sinkId)) {
+			if (linker.getDatasink().getSinkId().equals(this.getSinkId())) {
 				sinkConfig = Optional.of(linker.getDatasinkConfig());
 				return sinkConfig;
 			}
@@ -29,6 +27,8 @@ public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoin
 		return sinkConfig;
 	}
 
+	abstract UUID getSinkId();
+	
 	@Override
 	public void onComplete() {
 		// TODO Auto-generated method stub

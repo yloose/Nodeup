@@ -85,4 +85,9 @@ public class MqttSink extends WeatherdataSink {
 			// TODO: handle exception
 		}
 	}
+
+	@Override
+	UUID getSinkId() {
+		return this.sinkId;
+	}
 }
