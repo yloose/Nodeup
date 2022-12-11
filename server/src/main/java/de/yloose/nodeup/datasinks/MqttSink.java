@@ -68,7 +68,7 @@ public class MqttSink extends WeatherdataSink {
 
 		try {
 			String publisherId = UUID.randomUUID().toString();
-			mqttClient = new MqttClient(config.get("host").toString(), publisherId);
+			mqttClient = new MqttClient(config.get("host").toString(), publisherId, null);
 			LOG.debug("Mqtt client {} created.", mqttClient);
 			MqttConnectOptions options = new MqttConnectOptions();
 			options.setAutomaticReconnect(true);
