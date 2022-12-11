@@ -102,6 +102,7 @@ public class MqttSink extends WeatherdataSink {
 			LOG.debug("Could not parse MQTT sink configuration: {}", e.getMessage());
 		} finally {
 			try {
+				mqttClient.disconnect();
 				mqttClient.close();
 			} catch (MqttException e) {
 				LOG.error("Error closing Mqtt client.", e);
