@@ -31,7 +31,6 @@ public class MqttSink extends WeatherdataSink {
 	
 	private static Logger LOG = LoggerFactory.getLogger(WeatherdataService.class);
 
-	private IMqttClient mqttClient;
 	ObjectMapper mapper = new ObjectMapper();
 
 	public MqttSink() {
@@ -65,6 +64,8 @@ public class MqttSink extends WeatherdataSink {
 			return;
 		}
 
+	    IMqttClient mqttClient = null;
+
 		try {
 			String publisherId = UUID.randomUUID().toString();
 			mqttClient = new MqttClient(config.get("host").toString(), publisherId);
@@ -92,14 +93,20 @@ public class MqttSink extends WeatherdataSink {
 				LOG.debug("Mqtt message {} published to topic {}.", msg, config.get("topic").toString().replace("%node%", datapoints.getNode().getDisplayName()));
 			}
 			
-			mqttClient.close();
 			LOG.debug("Successfully send datapoints over MQTT sink.");
 		} catch (MqttException e) {
 			// TODO Auto-generated catch block
-			LOG.debug("Failed to sent mqtt packet: {}", e.getMessage());
+			LOG.error("Failed to sent mqtt packet.", e);
 		} catch (JsonProcessingException e) {
 			// TODO: handle exception
 			LOG.debug("Could not parse MQTT sink configuration: {}", e.getMessage());
+		} finally {
+			try {
+				mqttClient.close();
+			} catch (MqttException e) {
+				LOG.error("Error closing Mqtt client.", e);
+			}
+
 		}
 	}
 
