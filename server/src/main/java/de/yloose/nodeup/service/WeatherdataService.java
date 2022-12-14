@@ -1,8 +1,10 @@
 package de.yloose.nodeup.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -10,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -117,8 +120,10 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 
 		ESPNowFrame espNowFrame = (ESPNowFrame) frame.getManagementFrame().getActionFrame();
 		byte[] senderOui = espNowFrame.getOui();
-		if ((senderOui[0] & 0xFF) != 0x18 || (senderOui[1] & 0xFF) != 0xfe || (senderOui[1] & 0xFF) != 0x34) {
-			LOG.debug("Received packet did not originate with Espressifs OUI. Received OUI: " + senderOui.toString());
+		if ((senderOui[0] & 0xFF) != 0x18 || (senderOui[1] & 0xFF) != 0xfe || (senderOui[2] & 0xFF) != 0x34) {
+			LOG.debug("Received packet did not originate with Espressifs OUI. Received OUI: {}",
+					String.join(":", Arrays.asList(senderOui).stream().map(b -> String.format("%02X", b)).collect(Collectors.toList()))
+			);
 			return null;
 		}
 		
