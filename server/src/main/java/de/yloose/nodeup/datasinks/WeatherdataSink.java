@@ -6,12 +6,18 @@ import java.util.UUID;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.yloose.nodeup.models.NodeDatasinkConfigLinker;
 import de.yloose.nodeup.models.NodeEntity;
+import de.yloose.nodeup.service.WeatherdataService;
 
 public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoints> {
 
 	private Flow.Subscription subscription;
+	
+	private static Logger LOG = LoggerFactory.getLogger(WeatherdataSink.class);
 
 	public abstract void handleData(WeatherDatapoints datapoints, Map<String, Object> config);
 
@@ -36,7 +42,7 @@ public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoin
 
 	@Override
 	public void onError(Throwable throwable) {
-		// TODO Auto-generated method stub
+		LOG.error("Failed to publish data to weatherdata sink: {}", throwable.getMessage());
 	}
 
 	@Override

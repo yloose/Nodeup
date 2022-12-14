@@ -18,7 +18,7 @@ public class DatasinkPublisher<T> extends SubmissionPublisher<T> {
 	public void publishToSinks(T data) {
 		LOG.debug("Publishing data to datasinks.");
 		this.offer(data, (subscriber, dataOnError) -> {
-			subscriber.onError(new RuntimeException("Data dropped"));
+			subscriber.onError(new RuntimeException("Data dropped: " + dataOnError.toString()));
 			return true;
 		});
 	}
