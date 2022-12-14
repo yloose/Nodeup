@@ -116,6 +116,12 @@ public class WeatherdataService implements Flow.Subscriber<ReceivedData<Weatherd
 		ReceivedData<Weatherdata> receivedData = new ReceivedData<Weatherdata>();
 
 		ESPNowFrame espNowFrame = (ESPNowFrame) frame.getManagementFrame().getActionFrame();
+		byte[] senderOui = espNowFrame.getOui();
+		if ((senderOui[0] & 0xFF) != 0x18 || (senderOui[1] & 0xFF) != 0xfe || (senderOui[1] & 0xFF) != 0x34) {
+			LOG.debug("Received packet did not originate with Espressifs OUI. Received OUI: " + senderOui.toString());
+			return null;
+		}
+		
 		Weatherdata weatherdata = new Weatherdata(espNowFrame.getVariable_data());		
 
 		receivedData.setData(weatherdata);

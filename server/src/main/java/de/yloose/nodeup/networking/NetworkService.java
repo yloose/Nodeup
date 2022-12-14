@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.yloose.nodeup.networking.packet.Frame;
+import de.yloose.nodeup.util.Conversion;
 
 public class NetworkService<T> extends SubmissionPublisher<T> {
 	
@@ -63,6 +64,11 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 		}
 		
 		T data = parseDataFunction.apply(frame);
+		if (data != null) {
+			LOG.info("A packet has been discarded by parsing function. Sender: " + Conversion.macBytesToString(frame.getManagementFrame().getSA()));
+			LOG.trace(frame.toString());
+			return;
+		}
 		
 		this.offer(data, (subscriber, weatherData) -> {
 			subscriber.onError(new RuntimeException("Weatherdata dropped."));
