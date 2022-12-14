@@ -64,7 +64,7 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 		}
 		
 		T data = parseDataFunction.apply(frame);
-		if (data != null) {
+		if (data == null) {
 			LOG.info("A packet has been discarded by parsing function. Sender: " + Conversion.macBytesToString(frame.getManagementFrame().getSA()));
 			LOG.trace(frame.toString());
 			return;
