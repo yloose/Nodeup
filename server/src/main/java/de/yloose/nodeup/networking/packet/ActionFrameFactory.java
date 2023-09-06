@@ -9,7 +9,7 @@ public class ActionFrameFactory {
 		case 127:
 			return ESPNowFrame.parseESPNowFrame(frame);
 		default:
-			throw new UnsupportedOperationException("Not implemented yet.");
+			throw new UnsupportedOperationException("Not implemented.");
 		}
 	}
 }

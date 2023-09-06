@@ -41,7 +41,7 @@ public class NetworkService<T> extends SubmissionPublisher<T> {
 			return false;
 		}
 		else if (ret == -3) {
-			LOG.error("Not all commands needed to initialize network where found.");
+			LOG.error("Not all commands needed to initialize networking where found.");
 			return false;
 		} else {
 			deviceHandle = ret;
