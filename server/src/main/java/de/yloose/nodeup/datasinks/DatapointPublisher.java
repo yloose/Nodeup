@@ -4,6 +4,6 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class WeatherDatapointsPublisher extends DatasinkPublisher<WeatherDatapoints> {
+public class DatapointPublisher extends DatasinkPublisher<DatapointsPublishable> {
 
 }

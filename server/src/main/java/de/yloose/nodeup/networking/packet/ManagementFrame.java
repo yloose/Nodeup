@@ -28,7 +28,7 @@ public class ManagementFrame {
 		this.seq_ctrl = Arrays.copyOfRange(frame, 22, 24);
 		
 		this.actionFrame = ActionFrameFactory.createActionFrame(Arrays.copyOfRange(frame, 24, 289));
-		
+				
 		if (frame.length > 285) {
 			this.fcs = Arrays.copyOfRange(frame, frame.length - 4, frame.length);
 		}
@@ -46,6 +46,10 @@ public class ManagementFrame {
 		this.seq_ctrl = new byte[2];
 		this.seq_ctrl[0] = 32;
 		this.seq_ctrl[1] = 0;
+	}
+	
+	public static ManagementFrame createManagementFrame(byte[] destMac) {
+		return new ManagementFrame(13, destMac, new byte[] { (byte) 0xce, 0x50, (byte) 0xe3, 0x26, 0x0b, (byte) 0xf7 });
 	}
 	
 	public void calculateFcs() {

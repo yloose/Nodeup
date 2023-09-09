@@ -1,29 +1,36 @@
 package de.yloose.nodeup.datasinks;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.yloose.nodeup.models.NodeEntity;
+import de.yloose.nodeup.networking.NodeData.DatapointIn;
 
-public class WeatherDatapoints {
+public class DatapointsPublishable implements Publishable {
 
-	private List<WeatherDatapoint> datapoints;
+	private List<DatapointOut> datapoints;
 	private NodeEntity node;
 	
-	public WeatherDatapoints() {
+	public DatapointsPublishable() {
 		super();
 	}
 
-	public WeatherDatapoints(List<WeatherDatapoint> datapoints, NodeEntity node) {
-		super();
+	public DatapointsPublishable(List<DatapointOut> datapoints, NodeEntity node) {
 		this.datapoints = datapoints;
 		this.node = node;
 	}
+	
+	public static DatapointsPublishable createFromDatapointIn(List<DatapointIn> datapointsIn, NodeEntity node) {
+		return new DatapointsPublishable(
+				datapointsIn.stream().map(dpIn -> new DatapointOut(dpIn.getTimestamp(), dpIn.getTemperature(), dpIn.getHumidity(), dpIn.getPressure(), dpIn.getVoltage())).collect(Collectors.toList()),
+				node);
+	}
 
-	public List<WeatherDatapoint> getDatapoints() {
+	public List<DatapointOut> getDatapoints() {
 		return datapoints;
 	}
 
-	public void setDatapoints(List<WeatherDatapoint> datapoints) {
+	public void setDatapoints(List<DatapointOut> datapoints) {
 		this.datapoints = datapoints;
 	}
 
@@ -35,7 +42,7 @@ public class WeatherDatapoints {
 		this.node = node;
 	}
 
-	public static class WeatherDatapoint {
+	public static class DatapointOut {
 
 		private long timestamp;
 		private float temperature;
@@ -43,7 +50,7 @@ public class WeatherDatapoints {
 		private float pressure;
 		private float voltage;
 
-		public WeatherDatapoint(long timestamp, float temperature, float humidity, float pressure, float voltage) {
+		public DatapointOut(long timestamp, float temperature, float humidity, float pressure, float voltage) {
 			super();
 			this.timestamp = timestamp;
 			this.temperature = temperature;

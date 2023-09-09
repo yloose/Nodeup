@@ -1,8 +1,18 @@
 package de.yloose.nodeup.networking.packet;
 
-public interface ActionFrame {
+public abstract class ActionFrame {
 
-	public int getCategory();
+	private byte category;
+
+	public ActionFrame(byte category) {
+		this.category = category;
+	}
+		
+	public byte[] toByteArray() {
+		return new byte[] {this.category};
+	}
 	
-	public byte[] toByteArray();
+	public byte getCategory() {
+		return category;
+	}
 }

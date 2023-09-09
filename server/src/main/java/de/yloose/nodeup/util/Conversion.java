@@ -3,6 +3,7 @@ package de.yloose.nodeup.util;
 import java.nio.ByteBuffer;
 
 public class Conversion {
+	
 	public static byte[] macStringToBytes(String mac) {
 		ByteBuffer buffer = ByteBuffer.allocate(6);
 		for (String macPart : mac.split(":")) {
@@ -17,5 +18,9 @@ public class Conversion {
 			mac[i] = String.format("%02X", bytes[i]);
 		}
 		return String.join(":", mac);
+	}
+	
+	public static byte booleanToByte(boolean b) {
+		return b ? (byte) 1 : (byte) 0;
 	}
 }

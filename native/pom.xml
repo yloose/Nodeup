@@ -10,7 +10,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<native.source.filename>de_yloose_nodeup_networking_NetworkService.c</native.source.filename>
+		<native.source.filename>de_yloose_nodeup_service_NetworkService.c</native.source.filename>
 		<native.compiler.executable>/usr/bin/gcc</native.compiler.executable>
 		<native.platform.specific.include></native.platform.specific.include>
 		<native.platform.specific.lib></native.platform.specific.lib>
@@ -42,7 +42,7 @@
 		<profile>
 			<id>fakeNetwork</id>
 			<properties>
-				<native.source.filename>de_yloose_nodeup_networking_FakeNetworkService.c</native.source.filename>
+				<native.source.filename>de_yloose_nodeup_service_FakeNetworkService.c</native.source.filename>
 			</properties>
 		</profile>
 	</profiles>

@@ -2,7 +2,6 @@ package de.yloose.nodeup;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import de.yloose.nodeup.lib.NativeLibraryLoader;
-import de.yloose.nodeup.util.SystemUtil;
 
 @SpringBootApplication
 public class Nodeup {

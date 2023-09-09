@@ -3,10 +3,10 @@ package de.yloose.nodeup.util;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.persistence.AttributeConverter;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.persistence.AttributeConverter;
 
 public class HashMapConverter implements AttributeConverter<Map<String, Object>, String> {
 

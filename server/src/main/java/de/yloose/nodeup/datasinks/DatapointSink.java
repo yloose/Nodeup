@@ -11,15 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import de.yloose.nodeup.models.NodeDatasinkConfigLinker;
 import de.yloose.nodeup.models.NodeEntity;
-import de.yloose.nodeup.service.WeatherdataService;
 
-public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoints> {
+public abstract class DatapointSink implements Flow.Subscriber<DatapointsPublishable> {
 
 	private Flow.Subscription subscription;
 	
-	private static Logger LOG = LoggerFactory.getLogger(WeatherdataSink.class);
+	private static Logger LOG = LoggerFactory.getLogger(DatapointSink.class);
 
-	public abstract void handleData(WeatherDatapoints datapoints, Map<String, Object> config);
+	public abstract void handleData(DatapointsPublishable datapoints, Map<String, Object> config);
 
 	private Optional<Map<String, Object>> getSinkConfig(NodeEntity node) {
 		Optional<Map<String, Object>> sinkConfig = Optional.empty();
@@ -33,7 +32,7 @@ public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoin
 		return sinkConfig;
 	}
 
-	abstract UUID getSinkId();
+	public abstract UUID getSinkId();
 	
 	@Override
 	public void onComplete() {
@@ -46,7 +45,7 @@ public abstract class WeatherdataSink implements Flow.Subscriber<WeatherDatapoin
 	}
 
 	@Override
-	public void onNext(WeatherDatapoints data) {
+	public void onNext(DatapointsPublishable data) {
 		Optional<Map<String, Object>> configOpt = getSinkConfig(data.getNode());
 		if (configOpt.isPresent()) {
 			handleData(data, configOpt.get());

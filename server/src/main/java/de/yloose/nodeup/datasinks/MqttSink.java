@@ -3,8 +3,6 @@ package de.yloose.nodeup.datasinks;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -18,18 +16,18 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.yloose.nodeup.datasinks.WeatherDatapoints.WeatherDatapoint;
-import de.yloose.nodeup.service.WeatherdataService;
+import de.yloose.nodeup.datasinks.DatapointsPublishable.DatapointOut;
+import jakarta.annotation.PostConstruct;
 
 @Component
-public class MqttSink extends WeatherdataSink {
+public class MqttSink extends DatapointSink {
 
 	@Autowired
-	WeatherDatapointsPublisher datasinkPublisher;
+	DatapointPublisher datasinkPublisher;
 
-	public UUID sinkId = UUID.fromString("44553b4e-4021-11ed-b878-0242ac120002");
+	private final UUID SINK_ID = UUID.fromString("44553b4e-4021-11ed-b878-0242ac120002");
 	
-	private static Logger LOG = LoggerFactory.getLogger(WeatherdataService.class);
+	private static Logger LOG = LoggerFactory.getLogger(MqttSink.class);
 
 	ObjectMapper mapper = new ObjectMapper();
 
@@ -54,7 +52,7 @@ public class MqttSink extends WeatherdataSink {
 	}
 
 	@Override
-	public void handleData(WeatherDatapoints datapoints, Map<String, Object> config) {
+	public void handleData(DatapointsPublishable datapoints, Map<String, Object> config) {
 		
 		LOG.debug("Sending datapoints over MQTT.");
 		
@@ -83,7 +81,7 @@ public class MqttSink extends WeatherdataSink {
 			LOG.debug("{} weather datapoints to publish.", datapoints.getDatapoints().size());
 			
 			
-			for(WeatherDatapoint datapoint : datapoints.getDatapoints()) {
+			for(DatapointOut datapoint : datapoints.getDatapoints()) {
 				MqttMessage msg =  new MqttMessage(mapper.writeValueAsBytes(datapoint));
 				LOG.debug("Mqtt message {} created.", msg);
 
@@ -99,7 +97,7 @@ public class MqttSink extends WeatherdataSink {
 			LOG.error("Failed to sent mqtt packet.", e);
 		} catch (JsonProcessingException e) {
 			// TODO: handle exception
-			LOG.debug("Could not parse MQTT sink configuration: {}", e.getMessage());
+			LOG.info("Could not parse MQTT sink configuration: {}", e.getMessage());
 		} finally {
 			try {
 				mqttClient.disconnect();
@@ -112,7 +110,7 @@ public class MqttSink extends WeatherdataSink {
 	}
 
 	@Override
-	UUID getSinkId() {
-		return this.sinkId;
+	public UUID getSinkId() {
+		return this.SINK_ID;
 	}
 }

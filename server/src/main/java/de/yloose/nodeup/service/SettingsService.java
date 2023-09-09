@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class SettingsService {
 
 	@Autowired
-	ConfigurableApplicationContext ctx;
+	private ConfigurableApplicationContext ctx;
 	
 	public void update() {
 		Thread thread = new Thread(this::performShutdown);

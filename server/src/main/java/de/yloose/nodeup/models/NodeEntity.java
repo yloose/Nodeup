@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -35,12 +35,25 @@ public class NodeEntity {
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "NODE_ID", nullable = false)
 	private List<NodeDatasinkConfigLinker> datasinksConfigs;
+	
+	public NodeEntity() {
+		super();
+	}
+
+	public NodeEntity(String mac, NodeConfig config) {
+		this.mac = mac;
+		this.config = config;
+	}
+
+	public static NodeEntity createNewNodeWithDefaultConfig(String mac) {
+		return new NodeEntity(mac, NodeConfig.getDefaultConfig());
+	}
 
 	@Embeddable
 	public static class NodeConfig {
 		private int sendDataInterval;
 		private int measureInterval;
-		private ESPOperatingMode espOperatingMode;
+		private NodeOperatingMode operatingMode;
 		private boolean useULP;
 		@Embedded
 		private SendDataDeltas sendDataDeltas;
@@ -50,23 +63,23 @@ public class NodeEntity {
 			super();
 		}
 
-		public NodeConfig(int sendDataInterval, int measureInterval, ESPOperatingMode espOperatingMode, boolean useULP,
+		public NodeConfig(int sendDataInterval, int measureInterval, NodeOperatingMode operatingMode, boolean useULP,
 				SendDataDeltas sendDataDeltas, double swCutoffVoltage) {
 			super();
 			this.sendDataInterval = sendDataInterval;
 			this.measureInterval = measureInterval;
-			this.espOperatingMode = espOperatingMode;
+			this.operatingMode = operatingMode;
 			this.useULP = useULP;
 			this.sendDataDeltas = sendDataDeltas;
 			this.swCutoffVoltage = swCutoffVoltage;
 		}
 
-		public enum ESPOperatingMode {
+		public enum NodeOperatingMode {
 			ESP_MODE_HIBERNATE(0), ESP_MODE_DEEPSLEEP(1);
 
 			private final int value;
 
-			private ESPOperatingMode(int value) {
+			private NodeOperatingMode(int value) {
 				this.value = value;
 			}
 
@@ -87,7 +100,6 @@ public class NodeEntity {
 			}
 
 			public SendDataDeltas(double temp, double humid, double press, double volt) {
-				super();
 				this.temperature = temp;
 				this.humidity = humid;
 				this.pressure = press;
@@ -129,7 +141,7 @@ public class NodeEntity {
 
 		private static int defaultSendDataInterval = 600;
 		private static int defaultMeasureInterval = 600;
-		private static ESPOperatingMode defaultEspOperatingMode = ESPOperatingMode.ESP_MODE_HIBERNATE;
+		private static NodeOperatingMode defaultEspOperatingMode = NodeOperatingMode.ESP_MODE_HIBERNATE;
 		private static boolean defaultUseULP = false;
 		private static SendDataDeltas defaultSendDataDeltas = new SendDataDeltas(2, 5, 10, 0.1);
 		private static double defaultSwCutoffVoltage = 3.0;
@@ -155,12 +167,12 @@ public class NodeEntity {
 			this.measureInterval = measureInterval;
 		}
 
-		public ESPOperatingMode getEspOperatingMode() {
-			return espOperatingMode;
+		public NodeOperatingMode getOperatingMode() {
+			return operatingMode;
 		}
 
-		public void setEspOperatingMode(ESPOperatingMode espOperatingMode) {
-			this.espOperatingMode = espOperatingMode;
+		public void setOperatingMode(NodeOperatingMode operatingMode) {
+			this.operatingMode = operatingMode;
 		}
 
 		public boolean isUseULP() {

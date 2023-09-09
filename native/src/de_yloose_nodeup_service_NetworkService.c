@@ -1,9 +1,11 @@
-#include "../include/de_yloose_nodeup_networking_NetworkService.h"
+#include "de_yloose_nodeup_service_NetworkService.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pcap.h>
+
+const char *filter_exp = "link[0]=0xD0 and ether dst FF:FF:FF:FF:FF:FF";
 
 typedef struct {
 	JNIEnv *env;
@@ -107,7 +109,7 @@ int initialize_network_interface(const char *iface_name) {
 	return ret;
 }
 
-JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_networking_NetworkService_initNetworkInterface(
+JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_service_NetworkService_initNetworkInterface(
 		JNIEnv *env, jobject thisObject, jstring device) {
 
 	const char *dev = (*env)->GetStringUTFChars(env, device, NULL);
@@ -117,7 +119,6 @@ JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_networking_NetworkService_initNetw
 
 	char error_buffer[PCAP_ERRBUF_SIZE];
 	struct bpf_program filter;
-	char filter_exp[] = "link[0]=0xD0 and ether dst FF:FF:FF:FF:FF:FF";
 
 	pcap_t *device_handle = malloc(sizeof(pcap_t*));
 	device_handle = pcap_open_live(dev, BUFSIZ, 1, 1000, error_buffer);
@@ -165,7 +166,7 @@ void packet_handler(u_char *args, const struct pcap_pkthdr *header,
 
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startListeningLoop(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_service_NetworkService_startListeningLoop(
 		JNIEnv *env, jobject thisObject, jlong dev) {
 
 	pcap_t *device_handle = (pcap_t*) dev;
@@ -178,7 +179,7 @@ JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_startList
 	return 1;
 }
 
-JNIEXPORT jint JNICALL Java_de_yloose_nodeup_networking_NetworkService_sendPacket(
+JNIEXPORT jint JNICALL Java_de_yloose_nodeup_service_NetworkService_sendPacket(
 		JNIEnv *env, jobject thisObject, jlong dev, jbyteArray packetArray,
 		jint length) {
 

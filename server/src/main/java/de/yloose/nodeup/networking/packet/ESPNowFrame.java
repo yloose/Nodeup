@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public class ESPNowFrame implements ActionFrame {
+import de.yloose.nodeup.networking.NodeupFrame;
+import de.yloose.nodeup.networking.NodeupFrameFactory;
 
-	private byte category;
+public class ESPNowFrame extends ActionFrame {
 
 	private byte[] oui;
 	private byte element_id;
@@ -15,37 +16,33 @@ public class ESPNowFrame implements ActionFrame {
 	private byte[] oui_vsc;
 	private byte type;
 	private byte version;
-	private byte[] variable_data;
+	
+	NodeupFrame nodeupFrame;
+	
+	public static final byte[] ESPRESSIF_OUI = new byte[] { 0x18, (byte) 0xfe, 0x34 };
 
-	public ESPNowFrame(byte category, byte[] oui, byte element_id, byte length, byte[] oui_vsc, byte type, byte version,
-			byte[] variable_data) {
-		super();
-		this.category = category;
+	public ESPNowFrame(byte category, byte[] oui, byte element_id, byte length, byte[] oui_vsc, byte type, byte version) {
+		super(category);
 		this.oui = oui;
 		this.element_id = element_id;
 		this.length = length;
 		this.oui_vsc = oui_vsc;
 		this.type = type;
 		this.version = version;
-		this.variable_data = variable_data;
 	}
 
-	public static ESPNowFrame parseESPNowFrame(byte[] frame) {
-		// @formatter:off
-		return new ESPNowFrame(
-				frame[0],
-				Arrays.copyOfRange(frame, 1, 4),
-				frame[8],
-				frame[9],
-				Arrays.copyOfRange(frame, 10, 13),
-				frame[13],
-				frame[14],
-				Arrays.copyOfRange(frame, 15, frame.length)
-			);
-		// @formatter:on
+	public ESPNowFrame(byte[] frame) {
+		super(frame[0]);
+		this.oui = Arrays.copyOfRange(frame, 1, 4);
+		this.element_id = frame[8];
+		this.length = frame[9];
+		this.oui_vsc = Arrays.copyOfRange(frame, 10, 13);
+		this.type = frame[13];
+		this.version = frame[14];
+		this.nodeupFrame = NodeupFrameFactory.createNodeupFrame(Arrays.copyOfRange(frame, 15, frame.length));
 	}
 
-	public static ESPNowFrame createESPNowFrame(byte[] data) {
+	public static ESPNowFrame createESPNowFrame() {
 		// @formatter:off
 		return new ESPNowFrame(
 				// Category = 127 indicating vendor specific content
@@ -54,19 +51,28 @@ public class ESPNowFrame implements ActionFrame {
 				new byte[] {24, (byte) 254, 52},
 				// Element id = 221 indicating vendor specific content
 				(byte) 221,
-				// Length = OUI + Type + Version + Body
-				(byte) (3 + 1 + 1 + data.length),
+				// Length = OUI + Type + Version
+				(byte) (3 + 1 + 1),
 				// Organizationally unique identifier (inside vendor specific content) from espressif
 				new byte[] {24, (byte) 254, 52},
 				// Type = 4 indicating ESP-NOW
 				(byte) 4,
 				// Version = ESP-NOW version
-				(byte) 1,
-				data
+				(byte) 1
 			);
 		// @formatter:on
 	}
+	
+	public void calculateLength() {
+		// Length = OUI + Type + Version + Body
+		this.length = (byte) (3 + 1 + 1 + nodeupFrame.toByteArray().length);
+	}
+	
+	public boolean isESPNow() {
+		return this.oui.equals(ESPRESSIF_OUI);
+	}
 
+	@Override
 	public byte[] toByteArray() {
 		// Generate 4 random bytes
 		byte[] randomBytes = new byte[4];
@@ -74,7 +80,7 @@ public class ESPNowFrame implements ActionFrame {
 		
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
-			stream.write(this.category);
+			stream.write(super.toByteArray());
 			stream.write(this.oui);
 			stream.write(randomBytes);
 			stream.write(this.element_id);
@@ -82,7 +88,7 @@ public class ESPNowFrame implements ActionFrame {
 			stream.write(this.oui_vsc);
 			stream.write(this.type);
 			stream.write(this.version);
-			stream.write(this.variable_data);
+			stream.write(this.nodeupFrame.toByteArray());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,16 +96,16 @@ public class ESPNowFrame implements ActionFrame {
 
 		return stream.toByteArray();
 	}
-
-	public int getCategory() {
-		return (int) category;
-	}
-
+	
 	public byte[] getOui() {
 		return oui;
 	}
 
-	public byte[] getVariable_data() {
-		return variable_data;
+	public NodeupFrame getNodeupFrame() {
+		return nodeupFrame;
+	}
+
+	public void setNodeupFrame(NodeupFrame nodeupFrame) {
+		this.nodeupFrame = nodeupFrame;
 	}
 }
