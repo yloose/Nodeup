@@ -35,7 +35,7 @@ public class NetworkService {
 	@PostConstruct
 	public void init() {
 		if (this.initNetwork(this.networkInterface)) {
-			this.start();
+			new Thread(this::start).start();
 		}
 	}
 	

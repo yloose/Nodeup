@@ -157,7 +157,7 @@ void packet_handler(u_char *args, const struct pcap_pkthdr *header,
 			0);
 
 	jclass networkHandler = (*(jni_env->env))->FindClass(jni_env->env,
-			"de/yloose/nodeup/networking/NetworkService");
+			"de/yloose/nodeup/service/NetworkService");
 	jmethodID packet_callback = (*(jni_env->env))->GetMethodID(jni_env->env,
 			networkHandler, "nativeRecvPacketCallback", "([B)V");
 

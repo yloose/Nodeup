@@ -46,12 +46,42 @@ struct ieee80211_radiotap_hdr {
 } __attribute__ ((packed));
 
 
+typedef enum {
+	// Prefix node/server indicates the sender
+
+	NODE_DATA,
+	NODE_OTA_STATUS,
+	NODE_INFO,
+
+	SERVER_CONFIGURATION,
+	SERVER_OTA_UPDATE,
+
+	DATA_TYPE_MAX
+
+} espnow_data_type_t;
+
+typedef struct {
+	uint8_t version :4;
+	uint8_t type :4;
+	uint8_t size;
+	uint16_t magic;
+	uint8_t payload[0];
+}__attribute__((packed)) espnow_data_t;
+
 typedef struct {
     uint16_t temp;
     uint16_t humid;
     uint16_t press;
     uint8_t voltage;
 }__attribute__((packed)) datapoint_t;
+
+typedef struct {
+	uint8_t send_cause;
+	uint8_t packet_index;
+	uint8_t packet_count;
+	uint8_t size;
+	datapoint_t datapoints[0];
+}__attribute__((packed)) data_packet_t;
 
 const char *socket_path = "/tmp/nodeup.socket";
 int sfd;
@@ -83,11 +113,23 @@ JNIEXPORT jlong JNICALL Java_de_yloose_nodeup_service_NetworkService_initNetwork
 	return 0;
 }
 
-uint8_t *build_datapoints(int datapoint_cnt) {
+uint8_t buid_nodeup_data_frame(void *v_data, int datapoint_cnt) {
 
-	uint8_t *data = malloc(sizeof(uint8_t) * 250);
-	datapoint_t datapoints[35];
-	memset(datapoints, 0, sizeof(datapoint_t) * 35);
+	espnow_data_t *espnow_packet = (espnow_data_t *) v_data;
+	data_packet_t data_packet;
+	uint8_t size = sizeof(espnow_data_t) + sizeof(data_packet_t) + sizeof(datapoint_t) * datapoint_cnt;
+
+	espnow_packet->type = NODE_DATA;
+	espnow_packet->version = 1;
+	espnow_packet->size = size;
+	espnow_packet->magic = 0;
+
+	data_packet.send_cause = 0;
+	data_packet.packet_index = 0;
+	data_packet.packet_count = 1;
+	data_packet.size = datapoint_cnt;
+
+	datapoint_t datapoints[datapoint_cnt];
 
 	for (size_t i = 0; i < datapoint_cnt; i++) {
 		datapoints[i].temp = 1;
@@ -96,13 +138,13 @@ uint8_t *build_datapoints(int datapoint_cnt) {
 		datapoints[i].voltage = 1;
 	}
 
-	memcpy(data, datapoints, sizeof(datapoint_t) * 35);
-	data[248] = 0;
-	data[249] = 0;
-	return data;
+	memcpy(espnow_packet->payload, &data_packet, sizeof(data_packet_t));
+	memcpy(((data_packet_t *) espnow_packet->payload)->datapoints, datapoints, sizeof(datapoint_t) * datapoint_cnt);
+
+	return size;
 }
 
-char *buildFrame(int datapoint_cnt) {
+char *build_frame(int datapoint_cnt) {
 
 	struct ieee80211_radiotap_hdr radiotap_header;
 	uint8_t radiotap[10];
@@ -156,8 +198,9 @@ char *buildFrame(int datapoint_cnt) {
 	mgmt.action.vendor_specific_esp_now.oui_vsc[2] = 52;
 	mgmt.action.vendor_specific_esp_now.type = 4;
 	mgmt.action.vendor_specific_esp_now.version = 1;
-	char *v_data = build_datapoints(datapoint_cnt);
-	memcpy(mgmt.action.vendor_specific_esp_now.variable_data, v_data, 250);
+	uint8_t *v_data = malloc(250);
+	uint8_t v_data_size = buid_nodeup_data_frame(v_data, datapoint_cnt);
+	memcpy(mgmt.action.vendor_specific_esp_now.variable_data, v_data, v_data_size);
 	free(v_data);
 	mgmt.fcs = 0;
 
@@ -181,7 +224,7 @@ void send_packets_to_server(JNIEnv *env, jobject thisObject, char* data, int siz
 	(*env)->ReleaseByteArrayElements(env, ret_packet, temp, 0);
 
 	jclass networkHandler = (*env)->FindClass(env,
-			"de/yloose/nodeup/networking/NetworkService");
+			"de/yloose/nodeup/service/NetworkService");
 	jmethodID packet_callback = (*env)->GetMethodID(env, networkHandler,
 			"nativeRecvPacketCallback", "([B)V");
 
@@ -190,7 +233,7 @@ void send_packets_to_server(JNIEnv *env, jobject thisObject, char* data, int siz
 }
 
 void fake_packets_to_server(JNIEnv *env, jobject thisObject, int cnt) {
-	char *packet = buildFrame(cnt);
+	char *packet = build_frame(cnt);
 	int packet_size = sizeof(uint8_t) * 18 + sizeof(struct ieee80211_mgmt);
 
 	send_packets_to_server(env, thisObject, packet, packet_size);

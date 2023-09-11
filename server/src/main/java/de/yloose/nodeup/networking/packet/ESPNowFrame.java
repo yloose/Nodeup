@@ -69,7 +69,7 @@ public class ESPNowFrame extends ActionFrame {
 	}
 	
 	public boolean isESPNow() {
-		return this.oui.equals(ESPRESSIF_OUI);
+		return Arrays.equals(oui, ESPRESSIF_OUI);
 	}
 
 	@Override

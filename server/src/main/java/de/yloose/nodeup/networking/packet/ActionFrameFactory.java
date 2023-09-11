@@ -10,7 +10,6 @@ public class ActionFrameFactory {
 
 	private static Logger LOG = LoggerFactory.getLogger(ActionFrameFactory.class);
 
-	
 	public static ActionFrame createActionFrame(byte[] data) {
 		
 		switch ((int) data[0]) {

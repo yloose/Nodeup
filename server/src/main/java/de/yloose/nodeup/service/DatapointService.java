@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class DatapointService {
 	@Value("${persistence.datapointsToSave:10}")
 	private int datapointsToSave;
 	
+	private static Logger LOG = LoggerFactory.getLogger(DatapointService.class);
+	
 	public void saveDatapoints(List<DatapointIn> datapointsIn, NodeEntity node) {
 		
 		// Convert datapointsIn to datapoinEntities
@@ -31,9 +35,12 @@ public class DatapointService {
 		// Save all datapointEntities
 		datapoints.forEach(datapoint -> datapointRepository.save(datapoint));
 		
+		LOG.info("Saved {} datapoints.", datapointsIn.size());
+		
 		// Delete all datapoints over datapointsToSave
 		List<DatapointEntity> allDatapoints = datapointRepository.findAllByNodeOrderByTimestampDesc(node);
-		datapointRepository.deleteAll(allDatapoints.subList(datapointsToSave, allDatapoints.size()));
+		if (allDatapoints.size() > datapointsToSave)
+			datapointRepository.deleteAll(allDatapoints.subList(datapointsToSave, allDatapoints.size()));
 		
 	}
 }

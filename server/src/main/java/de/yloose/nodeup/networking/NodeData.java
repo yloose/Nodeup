@@ -70,12 +70,11 @@ public class NodeData extends NodeupFrame {
 
 		public DatapointIn(byte[] data) {
 			this.temperature = (float) bytesToInt(Arrays.copyOfRange(data, 0, 2)) / 100 - 40;
-			this.humidity = (float) bytesToInt(Arrays.copyOfRange(data, 2, 4)) / 1000;
+			this.humidity = (float) bytesToInt(Arrays.copyOfRange(data, 2, 4)) / 100;
 			this.pressure = (float) bytesToInt(Arrays.copyOfRange(data, 4, 6)) / 100 + 600;
 			
 			if (data[6] < 0) {
 				this.voltage = (Integer.valueOf(256 + data[6]).floatValue() + 250) / 100;
-
 			} else {
 				this.voltage = (Integer.valueOf(data[6]).floatValue() + 250) / 100;
 			}
